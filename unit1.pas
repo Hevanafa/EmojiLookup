@@ -6,9 +6,21 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls,
-  Graphics, Dialogs, StdCtrls;
+  Graphics, Dialogs, StdCtrls, LazUTF8, FGL;
 
 type
+
+  { TEmoji }
+  TEmoji = class
+  private
+    parsed: string;
+    description: string;
+
+  public
+    constructor New(const rawCodepoints: string; const aDescription: string);
+  end;
+
+  TEmojiList = specialize TFPGObjectList<TEmoji>;
 
   { TForm1 }
 
@@ -20,6 +32,7 @@ type
     procedure SearchEditChange(Sender: TObject);
 
   private
+    emojis: TEmojiList;
     procedure LoadEmojis;
   public
 
@@ -31,6 +44,22 @@ var
 implementation
 
 {$R *.lfm}
+
+{ TEmoji }
+
+constructor TEmoji.New(const rawCodepoints: string; const aDescription: string);
+var
+  chunks: TStringArray;
+  a: word;
+  s: string;
+  codepoints: array of longword;
+begin
+  chunks := trim(rawCodepoints).Split(' ');
+  SetLength(codepoints, length(chunks));
+
+  for a := 0 to Length(chunks) - 1 do
+    codepoints[a] := StrToInt('$' + chunks[a]);
+end;
 
 { TForm1 }
 
@@ -50,6 +79,8 @@ var
 begin
   ResultMemo.clear;
 
+  emojis := TEmojiList.create;
+
   AssignFile(f, 'data\emoji-test.txt');
   {$I-} reset(f); {$I+}
 
@@ -67,12 +98,14 @@ begin
     descriptor := trim(parts[1]);
 
     pair := line.Split(';');
-    rawCodepoints := pair[0];
+    rawCodepoints := trim(pair[0]);
     qualified := trim(pair[1]) = 'fully-qualified';
 
     if not qualified then continue;
 
-    ResultMemo.Append(line)
+    emojis.Add(TEmoji.New(rawCodepoints, descriptor));
+
+    ResultMemo.Append(rawCodepoints + ': ' + descriptor)
   end;
 
   closefile(f)
