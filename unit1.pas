@@ -8,7 +8,8 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls,
-  Graphics, Dialogs, StdCtrls, Grids, LazUTF8, FGL;
+  Graphics, Dialogs, StdCtrls, Grids,
+  LazUTF8, FGL, Math;
 
 type
 
@@ -38,7 +39,7 @@ type
     procedure SearchEditChange(Sender: TObject);
 
   private
-    emojis: TEmojiList;
+    emojiList: TEmojiList;
     procedure LoadEmojis;
   public
 
@@ -82,8 +83,34 @@ end;
 { TForm1 }
 
 procedure TForm1.SearchEditChange(Sender: TObject);
+var
+  emojis: TEmojiList;
+  emoji: temoji;
+  col, row: word;
 begin
+  emojis := TEmojiList.create;
 
+  for emoji in emojiList do
+    if emoji.Descriptor.contains(lowercase(SearchEdit.Text)) then
+      emojis.Add(emoji);
+
+  ResultGrid.clear;
+  ResultGrid.RowCount := ceil(emojis.Count / 8);
+
+  { TODO: Debug this }
+  col := 0;  row := 0;
+
+  for emoji in emojis do begin
+    ResultGrid.Cells[col, row] := emoji.emoji;
+
+    inc(col);
+    if col >= ResultGrid.ColCount then begin
+      inc(row);
+      col := 0;
+    end;
+  end;
+
+  emojis.free
 end;
 
 procedure TForm1.LoadEmojis;
@@ -97,7 +124,7 @@ var
 
   emoji: TEmoji;
 begin
-  emojis := TEmojiList.create;
+  emojiList := TEmojiList.create;
 
   AssignFile(f, 'data\emoji-test.txt');
   {$I-} reset(f); {$I+}
@@ -120,14 +147,14 @@ begin
     { # (emoji_char) E1.0 grinning face }
     descriptor := trim(parts[1]);
     rawCodepoints := trim(pair[0]);
-    emojis.Add(TEmoji.New(rawCodepoints, descriptor));
+    emojiList.Add(TEmoji.New(rawCodepoints, descriptor));
 
     { ResultMemo.Append(rawCodepoints + ': ' + descriptor) }
   end;
 
   closefile(f);
 
-  for emoji in emojis do
+  for emoji in emojiList do
     ResultMemo.append(emoji.Emoji + ': ' + emoji.Descriptor);
 end;
 
