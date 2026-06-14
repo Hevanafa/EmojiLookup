@@ -39,8 +39,19 @@ begin
 end;
 
 procedure TForm1.LoadEmojis;
+var
+  f: text;
+  line: string;
 begin
+  AssignFile(f, 'data\emoji-test.txt');
+  {$I-} reset(f); {$I+}
 
+  while not eof(f) do begin
+    readln(f, line);
+    ResultMemo.Append(line)
+  end;
+
+  closefile(f)
 end;
 
 procedure TForm1.FormShow(Sender: TObject);
