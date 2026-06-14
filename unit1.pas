@@ -8,7 +8,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls,
-  Graphics, Dialogs, StdCtrls, LazUTF8, FGL;
+  Graphics, Dialogs, StdCtrls, Grids, LazUTF8, FGL;
 
 type
 
@@ -32,6 +32,7 @@ type
   TForm1 = class(TForm)
     SearchEdit: TEdit;
     ResultMemo: TMemo;
+    ResultGrid: TStringGrid;
 
     procedure FormShow(Sender: TObject);
     procedure SearchEditChange(Sender: TObject);
