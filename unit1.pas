@@ -18,12 +18,13 @@ type
   private
     fCodepoints: array of longword;
     fEmoji: string;
-    fDescriptor: string;
+    fDescriptor, fLowerCaseDescriptor: string;
 
   public
     constructor New(const rawCodepoints: string; const aDescriptor: string);
     property Emoji: string read fEmoji;
     property Descriptor: string read fDescriptor;
+    property LowerCaseDescriptor: string read fLowerCaseDescriptor;
   end;
 
   TEmojiList = specialize TFPGObjectList<TEmoji>;
@@ -76,7 +77,8 @@ begin
   chunks := fDescriptor.split(' ');
   chunks := copy(chunks, 2);
 
-  fDescriptor := string.Join(' ', chunks)
+  fDescriptor := string.Join(' ', chunks);
+  fLowerCaseDescriptor := LowerCase(fDescriptor)
 end;
 
 
@@ -84,20 +86,27 @@ end;
 
 procedure TForm1.SearchEditChange(Sender: TObject);
 var
+  searchTerm: string;
   emojis: TEmojiList;
   emoji: temoji;
   col, row: word;
 begin
-  emojis := TEmojiList.create;
+  if emojiList = nil then exit;
 
-  for emoji in emojiList do
-    if emoji.Descriptor.contains(lowercase(SearchEdit.Text)) then
+  emojis := TEmojiList.create;
+  searchTerm := lowercase(SearchEdit.Text);
+
+  for emoji in emojiList do begin
+    ResultMemo.Text := 'Attempting to index ' + emoji.Descriptor;
+    Invalidate;
+
+    if emoji.Descriptor.contains(searchTerm) then
       emojis.Add(emoji);
+  end;
 
   ResultGrid.clear;
   ResultGrid.RowCount := ceil(emojis.Count / 8);
 
-  { TODO: Debug this }
   col := 0;  row := 0;
 
   for emoji in emojis do begin
@@ -154,8 +163,10 @@ begin
 
   closefile(f);
 
-  for emoji in emojiList do
-    ResultMemo.append(emoji.Emoji + ': ' + emoji.Descriptor);
+  { for emoji in emojiList do
+    ResultMemo.append(emoji.Emoji + ': ' + emoji.Descriptor); }
+
+  ResultMemo.Text := format('Loaded %d emojis', [emojiList.count])
 end;
 
 procedure TForm1.FormShow(Sender: TObject);
