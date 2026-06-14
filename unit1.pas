@@ -42,11 +42,18 @@ type
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormShow(Sender: TObject);
     procedure ResultGridDblClick(Sender: TObject);
+    procedure ResultGridSelectCell(Sender: TObject; aCol, aRow: Integer; var CanSelect: Boolean);
     procedure SearchEditChange(Sender: TObject);
+
+    { Returns an empty string if there's nothing selected }
+    { function GetSelectedEmoji: TEmoji; }
+    procedure UpdateSelectedEmoji;
 
   private
     emojiList: TEmojiList;
+    selectedEmoji: TEmoji;
     procedure LoadEmojis;
+
   public
 
   end;
@@ -148,6 +155,32 @@ begin
   emojis.free
 end;
 
+procedure TForm1.UpdateSelectedEmoji;
+var
+  idx: word;
+begin
+  if emojiList = nil then exit;
+
+  if ResultGrid.SelectedRangeCount = 0 then begin
+    FreeAndNil(selectedEmoji);
+    exit
+  end;
+
+  idx := ResultGrid.Row * ResultGrid.ColCount + ResultGrid.Col;
+
+  selectedEmoji := emojiList[idx]
+end;
+
+{ function TForm1.GetSelectedEmoji: string;
+begin
+  GetSelectedEmoji := '';
+  if ResultGrid.SelectedRangeCount = 0 then exit;
+
+  GetSelectedEmoji := ResultGrid.Cells[ResultGrid.Col, ResultGrid.Row]
+end; }
+
+
+
 procedure TForm1.LoadEmojis;
 var
   f: text;
@@ -206,9 +239,24 @@ end;
 
 procedure TForm1.ResultGridDblClick(Sender: TObject);
 begin
-  if ResultGrid.SelectedRangeCount = 0 then exit;
+  if selectedEmoji = nil then exit;
+  Clipboard.AsText := selectedEmoji.Emoji
+end;
 
-  Clipboard.AsText := ResultGrid.Cells[ResultGrid.Col, ResultGrid.Row]
+procedure TForm1.ResultGridSelectCell(Sender: TObject; aCol, aRow: Integer; var CanSelect: Boolean);
+begin
+  if ResultGrid.SelectedRangeCount = 0 then begin
+    DescriptionMemo.text := 'None selected!';
+    exit
+  end;
+
+  UpdateSelectedEmoji;
+
+  if selectedEmoji = nil then exit;
+
+  DescriptionMemo.Text :=
+    selectedEmoji.Descriptor + LineEnding;
+    { 'Codepoints: ' + selectedEmoji.codepo; }
 end;
 
 procedure TForm1.FormClose(Sender: TObject; var CloseAction: TCloseAction);
