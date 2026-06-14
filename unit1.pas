@@ -1,6 +1,8 @@
 unit Unit1;
 
-{$mode objfpc}{$H+}
+{$Mode ObjFPC}
+{$H+}
+{$Notes OFF}
 
 interface
 
@@ -13,11 +15,12 @@ type
   { TEmoji }
   TEmoji = class
   private
-    parsed: string;
-    description: string;
+    codepoints: array of longword;
+    emoji: string;
+    descriptor: string;
 
   public
-    constructor New(const rawCodepoints: string; const aDescription: string);
+    constructor New(const rawCodepoints: string; const aDescriptor: string);
   end;
 
   TEmojiList = specialize TFPGObjectList<TEmoji>;
@@ -47,18 +50,19 @@ implementation
 
 { TEmoji }
 
-constructor TEmoji.New(const rawCodepoints: string; const aDescription: string);
+constructor TEmoji.New(const rawCodepoints: string; const aDescriptor: string);
 var
   chunks: TStringArray;
   a: word;
   s: string;
-  codepoints: array of longword;
 begin
   chunks := trim(rawCodepoints).Split(' ');
   SetLength(codepoints, length(chunks));
 
   for a := 0 to Length(chunks) - 1 do
     codepoints[a] := StrToInt('$' + chunks[a]);
+
+
 end;
 
 { TForm1 }
@@ -77,8 +81,6 @@ var
   qualified: boolean; { unqualified, minimally-qualified, fully-qualified }
   parts: TStringArray;
 begin
-  ResultMemo.clear;
-
   emojis := TEmojiList.create;
 
   AssignFile(f, 'data\emoji-test.txt');
@@ -113,6 +115,9 @@ end;
 
 procedure TForm1.FormShow(Sender: TObject);
 begin
+  SearchEdit.clear;
+  ResultMemo.clear;
+
   LoadEmojis
 end;
 
