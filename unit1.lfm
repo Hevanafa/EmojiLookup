@@ -1,18 +1,18 @@
 object Form1: TForm1
   Left = 200
-  Height = 240
+  Height = 270
   Top = 100
-  Width = 320
+  Width = 429
   Caption = 'Form1'
-  ClientHeight = 240
-  ClientWidth = 320
+  ClientHeight = 270
+  ClientWidth = 429
   LCLVersion = '4.6.0.0'
   OnShow = FormShow
   object SearchEdit: TEdit
     Left = 4
     Height = 23
     Top = 4
-    Width = 308
+    Width = 417
     Anchors = [akTop, akLeft, akRight]
     TabOrder = 0
     Text = 'SearchEdit'
@@ -20,14 +20,15 @@ object Form1: TForm1
   end
   object ResultMemo: TMemo
     Left = 4
-    Height = 198
-    Top = 32
-    Width = 310
-    Anchors = [akTop, akLeft, akRight]
+    Height = 228
+    Top = 33
+    Width = 419
+    Anchors = [akTop, akLeft, akRight, akBottom]
     Lines.Strings = (
       'ResultMemo'
     )
-    ScrollBars = ssVertical
+    ScrollBars = ssBoth
     TabOrder = 1
+    WordWrap = False
   end
 end

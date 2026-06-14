@@ -43,6 +43,9 @@ procedure TForm1.LoadEmojis;
 var
   f: text;
   line, descriptor: string;
+  pair: TStringArray;
+  rawCodepoints: string;
+  qualified: boolean; { unqualified, minimally-qualified, fully-qualified }
   parts: TStringArray;
 begin
   ResultMemo.clear;
@@ -53,15 +56,21 @@ begin
   while not eof(f) do begin
     readln(f, line);
 
-    if line = '' then continue;
     if line.StartsWith('#') then continue;
+    if line = '' then continue;
 
     parts := line.Split('#');
     line := parts[0];
     line := trim(line);
+
+    { # (emoji_char) E1.0 grinning face }
     descriptor := trim(parts[1]);
 
-    if line = '' then continue;
+    pair := line.Split(';');
+    rawCodepoints := pair[0];
+    qualified := trim(pair[1]) = 'fully-qualified';
+
+    if not qualified then continue;
 
     ResultMemo.Append(line)
   end;
