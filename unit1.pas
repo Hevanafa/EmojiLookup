@@ -85,10 +85,10 @@ procedure TForm1.LoadEmojis;
 var
   f: text;
   line, descriptor: string;
-  pair: TStringArray;
   rawCodepoints: string;
   qualified: boolean; { unqualified, minimally-qualified, fully-qualified }
   parts: TStringArray;
+  pair: TStringArray;
 
   emoji: TEmoji;
 begin
@@ -107,15 +107,14 @@ begin
     line := parts[0];
     line := trim(line);
 
-    { # (emoji_char) E1.0 grinning face }
-    descriptor := trim(parts[1]);
-
     pair := line.Split(';');
-    rawCodepoints := trim(pair[0]);
     qualified := trim(pair[1]) = 'fully-qualified';
 
     if not qualified then continue;
 
+    { # (emoji_char) E1.0 grinning face }
+    descriptor := trim(parts[1]);
+    rawCodepoints := trim(pair[0]);
     emojis.Add(TEmoji.New(rawCodepoints, descriptor));
 
     { ResultMemo.Append(rawCodepoints + ': ' + descriptor) }
