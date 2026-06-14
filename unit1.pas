@@ -65,12 +65,17 @@ begin
   for a := 0 to Length(chunks) - 1 do
     fCodepoints[a] := StrToInt('$' + chunks[a]);
 
-  fDescriptor := aDescriptor;
-
   fEmoji := '';
 
   for a:=0 to length(fCodepoints) - 1 do
     fEmoji := fEmoji + UnicodeToUTF8(fCodepoints[a]);
+
+  { "(emoji) E0.6 grinning face with big eyes" }
+  fDescriptor := trim(aDescriptor);
+  chunks := fDescriptor.split(' ');
+  chunks := copy(chunks, 2);
+
+  fDescriptor := string.Join(' ', chunks)
 end;
 
 
