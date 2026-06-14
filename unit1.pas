@@ -21,10 +21,13 @@ type
     fDescriptor, fLowerCaseDescriptor: string;
 
   public
+    constructor New;
     constructor New(const rawCodepoints: string; const aDescriptor: string);
-    property Emoji: string read fEmoji;
-    property Descriptor: string read fDescriptor;
-    property LowerCaseDescriptor: string read fLowerCaseDescriptor;
+    function Clone: TEmoji;
+
+    property Emoji: string read fEmoji write fEmoji;
+    property Descriptor: string read fDescriptor write fDescriptor;
+    property LowerCaseDescriptor: string read fLowerCaseDescriptor write fLowerCaseDescriptor;
   end;
 
   TEmojiList = specialize TFPGObjectList<TEmoji>;
@@ -56,6 +59,10 @@ implementation
 
 { TEmoji }
 
+constructor TEmoji.New;
+begin
+end;
+
 constructor TEmoji.New(const rawCodepoints: string; const aDescriptor: string);
 var
   chunks: TStringArray;
@@ -82,6 +89,16 @@ begin
   fLowerCaseDescriptor := LowerCase(fDescriptor)
 end;
 
+function TEmoji.Clone: TEmoji;
+begin
+  clone := TEmoji.new;
+
+  clone.fEmoji := fEmoji;
+  clone.fCodepoints := copy(fCodepoints);
+  clone.fDescriptor := fDescriptor;
+  Clone.fLowerCaseDescriptor := fLowerCaseDescriptor
+end;
+
 
 { TForm1 }
 
@@ -94,8 +111,13 @@ var
 begin
   if emojiList = nil then exit;
 
+  searchTerm := lowercase(trim(SearchEdit.Text));
+  if searchTerm = '' then begin
+    ResultGrid.clear;
+    exit;
+  end;
+
   emojis := TEmojiList.create;
-  searchTerm := lowercase(SearchEdit.Text);
 
   for emoji in emojiList do begin
     { for debugging }
@@ -103,7 +125,7 @@ begin
     Invalidate; }
 
     if emoji.LowerCaseDescriptor.contains(searchTerm) then
-      emojis.Add(emoji);
+      emojis.Add(emoji.clone);
   end;
 
   ResultGrid.clear;
@@ -121,6 +143,7 @@ begin
     end;
   end;
 
+  emojis.clear;
   emojis.free
 end;
 
