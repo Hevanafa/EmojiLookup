@@ -9,7 +9,7 @@ interface
 uses
   Classes, SysUtils, Forms, Controls,
   Graphics, Dialogs, StdCtrls, Grids,
-  LazUTF8, FGL, Math;
+  LazUTF8, FGL, Math, Clipbrd;
 
 type
 
@@ -36,11 +36,12 @@ type
 
   TForm1 = class(TForm)
     SearchEdit: TEdit;
-    ResultMemo: TMemo;
+    DescriptionMemo: TMemo;
     ResultGrid: TStringGrid;
 
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormShow(Sender: TObject);
+    procedure ResultGridDblClick(Sender: TObject);
     procedure SearchEditChange(Sender: TObject);
 
   private
@@ -121,7 +122,7 @@ begin
 
   for emoji in emojiList do begin
     { for debugging }
-    { ResultMemo.Text := 'Attempting to index ' + emoji.Descriptor;
+    { DescriptionMemo.Text := 'Attempting to index ' + emoji.Descriptor;
     Invalidate; }
 
     if emoji.LowerCaseDescriptor.contains(searchTerm) then
@@ -183,23 +184,30 @@ begin
     rawCodepoints := trim(pair[0]);
     emojiList.Add(TEmoji.New(rawCodepoints, descriptor));
 
-    { ResultMemo.Append(rawCodepoints + ': ' + descriptor) }
+    { DescriptionMemo.Append(rawCodepoints + ': ' + descriptor) }
   end;
 
   closefile(f);
 
   { for emoji in emojiList do
-    ResultMemo.append(emoji.Emoji + ': ' + emoji.Descriptor); }
+    DescriptionMemo.append(emoji.Emoji + ': ' + emoji.Descriptor); }
 
-  ResultMemo.Text := format('Loaded %d emojis', [emojiList.count])
+  DescriptionMemo.Text := format('Loaded %d emojis', [emojiList.count])
 end;
 
 procedure TForm1.FormShow(Sender: TObject);
 begin
   SearchEdit.clear;
-  ResultMemo.clear;
+  DescriptionMemo.clear;
 
   LoadEmojis
+end;
+
+procedure TForm1.ResultGridDblClick(Sender: TObject);
+begin
+  if ResultGrid.SelectedRangeCount = 0 then exit;
+
+  Clipboard.AsText := ResultGrid.Cells[ResultGrid.Col, ResultGrid.Row]
 end;
 
 procedure TForm1.FormClose(Sender: TObject; var CloseAction: TCloseAction);
