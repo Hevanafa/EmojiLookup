@@ -42,11 +42,8 @@ type
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormShow(Sender: TObject);
     procedure ResultGridDblClick(Sender: TObject);
-    procedure ResultGridKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure ResultGridKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
-    procedure ResultGridMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure ResultGridMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-    procedure ResultGridSelectCell(Sender: TObject; aCol, aRow: Integer; var CanSelect: Boolean);
     procedure SearchEditChange(Sender: TObject);
 
     { Returns an empty string if there's nothing selected }
@@ -273,29 +270,14 @@ begin
   Clipboard.AsText := selectedEmoji.Emoji
 end;
 
-procedure TForm1.ResultGridKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
-begin
-
-end;
-
 procedure TForm1.ResultGridKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
   UpdateSelectionDisplay
 end;
 
-procedure TForm1.ResultGridMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-begin
-
-end;
-
 procedure TForm1.ResultGridMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
   UpdateSelectionDisplay
-end;
-
-procedure TForm1.ResultGridSelectCell(Sender: TObject; aCol, aRow: Integer; var CanSelect: Boolean);
-begin
-
 end;
 
 procedure TForm1.FormClose(Sender: TObject; var CloseAction: TCloseAction);
