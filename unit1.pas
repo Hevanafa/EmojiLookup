@@ -42,6 +42,10 @@ type
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormShow(Sender: TObject);
     procedure ResultGridDblClick(Sender: TObject);
+    procedure ResultGridKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure ResultGridKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure ResultGridMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+    procedure ResultGridMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure ResultGridSelectCell(Sender: TObject; aCol, aRow: Integer; var CanSelect: Boolean);
     procedure SearchEditChange(Sender: TObject);
 
@@ -51,9 +55,12 @@ type
 
   private
     emojiList: TEmojiList;
-    selectedEmoji: TEmoji;
-    procedure LoadEmojis;
 
+    lastEmojiSearchResult: TEmojiList;
+    selectedEmoji: TEmoji;
+
+    procedure LoadEmojis;
+    procedure UpdateSelectionDisplay;
   public
 
   end;
@@ -113,7 +120,6 @@ end;
 procedure TForm1.SearchEditChange(Sender: TObject);
 var
   searchTerm: string;
-  emojis: TEmojiList;
   emoji: temoji;
   col, row: word;
 begin
@@ -125,7 +131,8 @@ begin
     exit;
   end;
 
-  emojis := TEmojiList.create;
+  { emojis := TEmojiList.create; }
+  lastEmojiSearchResult.clear;
 
   for emoji in emojiList do begin
     { for debugging }
@@ -133,15 +140,15 @@ begin
     Invalidate; }
 
     if emoji.LowerCaseDescriptor.contains(searchTerm) then
-      emojis.Add(emoji.clone);
+      lastEmojiSearchResult.Add(emoji.clone);
   end;
 
   ResultGrid.clear;
-  ResultGrid.RowCount := ceil(emojis.Count / 8);
+  ResultGrid.RowCount := ceil(lastEmojiSearchResult.Count / 8);
 
   col := 0;  row := 0;
 
-  for emoji in emojis do begin
+  for emoji in lastEmojiSearchResult do begin
     ResultGrid.Cells[col, row] := emoji.emoji;
 
     inc(col);
@@ -151,8 +158,8 @@ begin
     end;
   end;
 
-  emojis.clear;
-  emojis.free
+  { emojis.clear;
+  emojis.free }
 end;
 
 procedure TForm1.UpdateSelectedEmoji;
@@ -168,7 +175,12 @@ begin
 
   idx := ResultGrid.Row * ResultGrid.ColCount + ResultGrid.Col;
 
-  selectedEmoji := emojiList[idx]
+  if idx >= lastEmojiSearchResult.Count then begin
+    FreeAndNil(selectedEmoji);
+    exit
+  end;
+
+  selectedEmoji := lastEmojiSearchResult[idx]
 end;
 
 { function TForm1.GetSelectedEmoji: string;
@@ -228,22 +240,7 @@ begin
   DescriptionMemo.Text := format('Loaded %d emojis', [emojiList.count])
 end;
 
-procedure TForm1.FormShow(Sender: TObject);
-begin
-  SearchEdit.clear;
-  DescriptionMemo.clear;
-  ResultGrid.Clear;
-
-  LoadEmojis
-end;
-
-procedure TForm1.ResultGridDblClick(Sender: TObject);
-begin
-  if selectedEmoji = nil then exit;
-  Clipboard.AsText := selectedEmoji.Emoji
-end;
-
-procedure TForm1.ResultGridSelectCell(Sender: TObject; aCol, aRow: Integer; var CanSelect: Boolean);
+procedure TForm1.UpdateSelectionDisplay;
 begin
   if ResultGrid.SelectedRangeCount = 0 then begin
     DescriptionMemo.text := 'None selected!';
@@ -255,12 +252,55 @@ begin
   if selectedEmoji = nil then exit;
 
   DescriptionMemo.Text :=
-    selectedEmoji.Descriptor + LineEnding;
+    selectedEmoji.Descriptor; { LineEnding }
     { 'Codepoints: ' + selectedEmoji.codepo; }
+end;
+
+procedure TForm1.FormShow(Sender: TObject);
+begin
+  SearchEdit.clear;
+  DescriptionMemo.clear;
+  ResultGrid.Clear;
+
+  lastEmojiSearchResult := TEmojiList.create;
+
+  LoadEmojis
+end;
+
+procedure TForm1.ResultGridDblClick(Sender: TObject);
+begin
+  if selectedEmoji = nil then exit;
+  Clipboard.AsText := selectedEmoji.Emoji
+end;
+
+procedure TForm1.ResultGridKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+begin
+
+end;
+
+procedure TForm1.ResultGridKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
+begin
+  UpdateSelectionDisplay
+end;
+
+procedure TForm1.ResultGridMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+begin
+
+end;
+
+procedure TForm1.ResultGridMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+begin
+  UpdateSelectionDisplay
+end;
+
+procedure TForm1.ResultGridSelectCell(Sender: TObject; aCol, aRow: Integer; var CanSelect: Boolean);
+begin
+
 end;
 
 procedure TForm1.FormClose(Sender: TObject; var CloseAction: TCloseAction);
 begin
+  freeandnil(lastEmojiSearchResult);
   FreeAndNil(emojiList)
 end;
 
