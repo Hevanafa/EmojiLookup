@@ -15,12 +15,14 @@ type
   { TEmoji }
   TEmoji = class
   private
-    codepoints: array of longword;
-    emoji: string;
-    descriptor: string;
+    fCodepoints: array of longword;
+    fEmoji: string;
+    fDescriptor: string;
 
   public
     constructor New(const rawCodepoints: string; const aDescriptor: string);
+    property Emoji: string read fEmoji;
+    property Descriptor: string read fDescriptor;
   end;
 
   TEmojiList = specialize TFPGObjectList<TEmoji>;
@@ -57,13 +59,19 @@ var
   s: string;
 begin
   chunks := trim(rawCodepoints).Split(' ');
-  SetLength(codepoints, length(chunks));
+  SetLength(fCodepoints, length(chunks));
 
   for a := 0 to Length(chunks) - 1 do
-    codepoints[a] := StrToInt('$' + chunks[a]);
+    fCodepoints[a] := StrToInt('$' + chunks[a]);
 
+  fDescriptor := aDescriptor;
 
+  fEmoji := '';
+
+  for a:=0 to length(fCodepoints) - 1 do
+    fEmoji := fEmoji + UnicodeToUTF8(fCodepoints[a]);
 end;
+
 
 { TForm1 }
 
@@ -80,6 +88,8 @@ var
   rawCodepoints: string;
   qualified: boolean; { unqualified, minimally-qualified, fully-qualified }
   parts: TStringArray;
+
+  emoji: TEmoji;
 begin
   emojis := TEmojiList.create;
 
@@ -107,10 +117,13 @@ begin
 
     emojis.Add(TEmoji.New(rawCodepoints, descriptor));
 
-    ResultMemo.Append(rawCodepoints + ': ' + descriptor)
+    { ResultMemo.Append(rawCodepoints + ': ' + descriptor) }
   end;
 
-  closefile(f)
+  closefile(f);
+
+  for emoji in emojis do
+    ResultMemo.append(emoji.Emoji + ': ' + emoji.Descriptor);
 end;
 
 procedure TForm1.FormShow(Sender: TObject);
