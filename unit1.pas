@@ -5,7 +5,8 @@ unit Unit1;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls;
+  Classes, SysUtils, Forms, Controls,
+  Graphics, Dialogs, StdCtrls;
 
 type
 
@@ -41,13 +42,27 @@ end;
 procedure TForm1.LoadEmojis;
 var
   f: text;
-  line: string;
+  line, descriptor: string;
+  parts: TStringArray;
 begin
+  ResultMemo.clear;
+
   AssignFile(f, 'data\emoji-test.txt');
   {$I-} reset(f); {$I+}
 
   while not eof(f) do begin
     readln(f, line);
+
+    if line = '' then continue;
+    if line.StartsWith('#') then continue;
+
+    parts := line.Split('#');
+    line := parts[0];
+    line := trim(line);
+    descriptor := trim(parts[1]);
+
+    if line = '' then continue;
+
     ResultMemo.Append(line)
   end;
 
