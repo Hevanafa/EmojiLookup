@@ -199,6 +199,7 @@ procedure TForm1.FormShow(Sender: TObject);
 begin
   SearchEdit.clear;
   DescriptionMemo.clear;
+  ResultGrid.Clear;
 
   LoadEmojis
 end;

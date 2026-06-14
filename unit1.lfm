@@ -39,16 +39,19 @@ object Form1: TForm1
     Top = 33
     Width = 420
     Anchors = [akTop, akLeft, akRight, akBottom]
+    AutoEdit = False
     ColCount = 8
-    DefaultColWidth = 32
+    DefaultColWidth = 40
     FixedCols = 0
     FixedRows = 0
     Font.CharSet = 4
     Font.Height = -21
     Font.Pitch = fpVariable
     Font.Quality = fqDraft
+    MouseWheelOption = mwGrid
     ParentFont = False
     RowCount = 1
+    TabAdvance = aaNone
     TabOrder = 2
     OnDblClick = ResultGridDblClick
   end
