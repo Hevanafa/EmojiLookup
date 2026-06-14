@@ -36,6 +36,7 @@ type
     ResultMemo: TMemo;
     ResultGrid: TStringGrid;
 
+    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormShow(Sender: TObject);
     procedure SearchEditChange(Sender: TObject);
 
@@ -97,10 +98,11 @@ begin
   searchTerm := lowercase(SearchEdit.Text);
 
   for emoji in emojiList do begin
-    ResultMemo.Text := 'Attempting to index ' + emoji.Descriptor;
-    Invalidate;
+    { for debugging }
+    { ResultMemo.Text := 'Attempting to index ' + emoji.Descriptor;
+    Invalidate; }
 
-    if emoji.Descriptor.contains(searchTerm) then
+    if emoji.LowerCaseDescriptor.contains(searchTerm) then
       emojis.Add(emoji);
   end;
 
@@ -175,6 +177,11 @@ begin
   ResultMemo.clear;
 
   LoadEmojis
+end;
+
+procedure TForm1.FormClose(Sender: TObject; var CloseAction: TCloseAction);
+begin
+  FreeAndNil(emojiList)
 end;
 
 end.
