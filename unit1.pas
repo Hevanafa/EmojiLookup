@@ -19,19 +19,23 @@ type
   { TEmoji }
   TEmoji = class
   private
-    fCodepoints: string;
+    { fCodepoints: string; }
     fDWordCodepoints: array of longword;
     fEmoji: string;
     fDescriptor, fLowerCaseDescriptor: string;
 
   public
     constructor New;
+    constructor New(const rawCodepoints: string);
     constructor New(const rawCodepoints: string; const aDescriptor: string);
-    function Clone: TEmoji;
+
+    { function Clone: TEmoji; }
 
     property Emoji: string read fEmoji write fEmoji;
     property Descriptor: string read fDescriptor write fDescriptor;
     property LowerCaseDescriptor: string read fLowerCaseDescriptor write fLowerCaseDescriptor;
+
+    function ToHexCodepoints: string;
   end;
 
   { TFavourite }
@@ -40,9 +44,8 @@ type
   private
     fEmoji: TEmoji;
   public
-    constructor New(emoji: TEmoji);
+    constructor New(const codepoints: string);
     property Emoji: TEmoji read fEmoji;
-    function ToHexCodepoints: string;
   end;
 
   TEmojiList = specialize TFPGObjectList<TEmoji>;
@@ -76,6 +79,7 @@ type
     emojiList: TEmojiList;
     favouriteList: TFavouriteList;
 
+    { Important: Do not own the instances }
     lastEmojiSearchResult: TEmojiList;
     selectedEmoji: TEmoji;
 
@@ -107,13 +111,18 @@ constructor TEmoji.New;
 begin
 end;
 
+constructor TEmoji.New(const rawCodepoints: string);
+begin
+  new(rawCodepoints, '')
+end;
+
 constructor TEmoji.New(const rawCodepoints: string; const aDescriptor: string);
 var
   chunks: TStringArray;
   a: word;
   s: string;
 begin
-  fCodepoints := rawCodepoints;
+  { fCodepoints := rawCodepoints; }
 
   chunks := trim(rawCodepoints).Split(' ');
   SetLength(fDWordCodepoints, length(chunks));
@@ -135,7 +144,7 @@ begin
   fLowerCaseDescriptor := LowerCase(fDescriptor)
 end;
 
-function TEmoji.Clone: TEmoji;
+{ function TEmoji.Clone: TEmoji;
 begin
   clone := TEmoji.new;
 
@@ -143,16 +152,17 @@ begin
   clone.fDWordCodepoints := copy(fDWordCodepoints);
   clone.fDescriptor := fDescriptor;
   Clone.fLowerCaseDescriptor := fLowerCaseDescriptor
-end;
+end; }
 
 { TFavourite }
 
-constructor TFavourite.New(emoji: TEmoji);
+constructor TFavourite.New(const codepoints: string);
 begin
-  fEmoji := emoji.clone
+  { fEmoji := emoji.clone }
+  fEmoji := TEmoji.New(codepoints)
 end;
 
-function TFavourite.ToHexCodepoints: string;
+function TEmoji.ToHexCodepoints: string;
 var
   codepoint: longword;
   len: word;
@@ -163,13 +173,13 @@ var
 begin
   ToHexCodepoints := '';
 
-  len := UTF8Length(fEmoji.Emoji);
+  len := UTF8Length(fEmoji);
   SetLength(strArray, len);
 
   c := '';
 
-  for idx := 1 to UTF8Length(fEmoji.emoji) do begin
-    c := UTF8Copy(fEmoji.emoji, idx, 1);
+  for idx := 1 to UTF8Length(fEmoji) do begin
+    c := UTF8Copy(fEmoji, idx, 1);
     codepoint := UTF8CodepointToUnicode(pchar(c), bytesLen);
     strArray[idx - 1] := format('%X', [codepoint])
   end;
@@ -206,7 +216,7 @@ begin
 
   for emoji in emojiList do
     if emoji.LowerCaseDescriptor.contains(searchTerm) then
-      lastEmojiSearchResult.Add(emoji.clone);
+      lastEmojiSearchResult.Add(emoji);
 
   ResultGrid.clear;
   ResultGrid.RowCount := ceil(lastEmojiSearchResult.Count / 8);
@@ -237,7 +247,6 @@ begin
   if emojiList = nil then exit;
 
   if ResultGrid.SelectedRangeCount = 0 then begin
-    { FreeAndNil(selectedEmoji); }
     selectedEmoji := nil;
     exit
   end;
@@ -245,7 +254,6 @@ begin
   idx := ResultGrid.Row * ResultGrid.ColCount + ResultGrid.Col;
 
   if idx >= lastEmojiSearchResult.Count then begin
-    { FreeAndNil(selectedEmoji); }
     selectedEmoji := nil;
     exit
   end;
@@ -330,7 +338,7 @@ begin
   Rewrite(f);
 
   for favitem in favouriteList do
-    writeln(f, favitem.ToHexCodepoints);
+    writeln(f, favitem.emoji.ToHexCodepoints);
 
   closefile(f)
 end;
@@ -389,7 +397,7 @@ begin
 
     for emoji in emojiList do
       if emoji.Emoji = emojiStr then begin
-        favouriteList.add(TFavourite.New(emoji.clone));
+        favouriteList.add(TFavourite.New(emoji.ToHexCodepoints));
         break
       end;
   end;
@@ -407,7 +415,7 @@ begin
   DescriptionMemo.clear;
   ResultGrid.Clear;
 
-  lastEmojiSearchResult := TEmojiList.create;
+  lastEmojiSearchResult := TEmojiList.Create(false);
   EmojiBufferEdit.clear;
 
   LoadEmojis;
@@ -474,7 +482,7 @@ begin
 
   if button = mbRight then begin
     if selectedEmoji <> nil then begin
-      favouriteList.Add(TFavourite.new(selectedEmoji));
+      favouriteList.Add(TFavourite.new(selectedEmoji.ToHexCodepoints));
 
       ResultGrid.InvalidateCell(col, row);
 
