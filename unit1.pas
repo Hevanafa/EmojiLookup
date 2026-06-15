@@ -342,6 +342,8 @@ var
   emoji: TEmoji;
 
 begin
+  favouriteList := TFavouriteList.create;
+
   if not FileExists(favouritesFile) then begin
     LoadFavourites := false;
     exit
@@ -356,17 +358,25 @@ begin
   while not EOF(f) do begin
     readln(f, line);
 
-    pair := line.Split('#');
-    rawEntry := pair[0];
-    if trim(rawEntry) = '' then continue;
+    if line.Contains('#') then begin
+      pair := line.Split('#');
+      rawEntry := trim(pair[0]);
+
+      if rawEntry = '' then continue;
+    end else
+      rawEntry := trim(line);
 
     { Assuming that emojiList is loaded }
 
     emojiStr := '';
     chunks := rawEntry.split(' ');
 
+    DescriptionMemo.text := format('Attempting to parse "%s"', [rawEntry]);
+
     for hex in chunks do
-      emojiStr := emojiStr + UnicodeToUTF8(StrToInt('$' + hex)) + ' ';
+      emojiStr := emojiStr + UnicodeToUTF8(StrToInt('$' + hex));
+
+    DescriptionMemo.append('Parsed: ' + emojistr);
 
     emojiStr := trim(emojistr);
 
@@ -376,6 +386,8 @@ begin
         break
       end;
   end;
+
+  { DescriptionMemo.Text := format('Loaded %d entries', [favouriteList.count]); }
 
   closefile(f);
 
@@ -388,8 +400,6 @@ begin
   DescriptionMemo.clear;
   ResultGrid.Clear;
 
-  favouriteList := TFavouriteList.create;
-
   lastEmojiSearchResult := TEmojiList.create;
   EmojiBufferEdit.clear;
 
@@ -399,10 +409,10 @@ begin
   { for emoji in emojiList do
     DescriptionMemo.append(emoji.Emoji + ': ' + emoji.Descriptor); }
 
-  DescriptionMemo.Text := format(
+  { DescriptionMemo.Text := format(
     'Loaded %d emojis in %.2f seconds', [
       emojiList.count,
-      loadingTime]);
+      loadingTime]); }
 
   if favouriteList.Count > 0 then
     DescriptionMemo.Append(format('Loaded %d favourites', [favouriteList.count]));
