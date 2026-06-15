@@ -158,7 +158,7 @@ begin
   for idx := 1 to UTF8Length(fEmoji.emoji) do begin
     c := UTF8Copy(fEmoji.emoji, idx, 1);
     codepoint := UTF8CodepointToUnicode(pchar(c), bytesLen);
-    strArray[idx - 1] := IntToHex(codepoint)
+    strArray[idx - 1] := format('%X', [codepoint])
   end;
 
   ToHexCodepoints := string.Join(' ', strArray)
