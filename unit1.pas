@@ -74,8 +74,13 @@ type
     lastEmojiSearchResult: TEmojiList;
     selectedEmoji: TEmoji;
 
+    const favouritesFile = 'favourites.txt';
+
     procedure LoadEmojis;
     procedure UpdateSelectionDisplay;
+
+    procedure SaveFavourites;
+    function LoadFavourites: boolean;
   public
 
   end;
@@ -150,7 +155,7 @@ var
 begin
   ToHexCodepoints := '';
 
-  len := UTF8Length(femoji.emoji);
+  len := UTF8Length(fEmoji.Emoji);
   SetLength(strArray, len);
 
   c := '';
@@ -312,6 +317,25 @@ begin
   DescriptionMemo.Text :=
     selectedEmoji.Descriptor; { LineEnding }
     { 'Codepoints: ' + selectedEmoji.codepo; }
+end;
+
+procedure TForm1.SaveFavourites;
+var
+  f: text;
+  favitem: TFavourite;
+begin
+  AssignFile(f, favouritesFile);
+  Rewrite(f);
+
+  for favitem in favouriteList do
+    writeln(f, favitem.ToHexCodepoints);
+
+  closefile(f)
+end;
+
+function TForm1.LoadFavourites: boolean;
+begin
+  LoadFavourites := false
 end;
 
 procedure TForm1.FormShow(Sender: TObject);
