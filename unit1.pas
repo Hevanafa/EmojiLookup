@@ -502,7 +502,11 @@ begin
 
   if button = mbRight then begin
     if selectedEmoji <> nil then begin
-      AddFavourite(selectedEmoji.Codepoints);
+      if IsInFavourites(selectedEmoji.Codepoints) then
+        RemoveFavourite(selectedEmoji.Codepoints)
+      else
+        AddFavourite(selectedEmoji.Codepoints);
+
       ResultGrid.InvalidateCell(col, row);
 
       SaveFavourites
