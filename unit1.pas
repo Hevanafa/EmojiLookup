@@ -37,6 +37,7 @@ type
     fEmoji: TEmoji;
   public
     constructor New(emoji: TEmoji);
+    property Emoji: TEmoji read fEmoji;
     function ToHexCodepoints: string;
   end;
 
@@ -57,6 +58,7 @@ type
     procedure CopyButtonClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
+    procedure ResultGridClick(Sender: TObject);
 
     procedure ResultGridDblClick(Sender: TObject);
     procedure ResultGridKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -142,21 +144,24 @@ var
   codepoint: longword;
   len: word;
   c: string;
-  strArray: TStringArray;
-  bytesConsumed: longint;
   idx: word;
+  bytesLen: longint;
+  strArray: TStringArray;
 begin
   ToHexCodepoints := '';
 
   len := UTF8Length(femoji.emoji);
   SetLength(strArray, len);
 
-  idx := 0;
+  { idx := 0; }
 
-  for c in fEmoji.emoji do begin
-    codepoint := UTF8CodepointToUnicode(pchar(c), bytesConsumed);
-    strArray[idx] := IntToHex(codepoint);
-    inc(idx)
+  c := '';
+
+  { for c in fEmoji.emoji do begin }
+  for idx := 1 to UTF8Length(fEmoji.emoji) do begin
+    UTF8Copy(c, idx, 1);
+    codepoint := UTF8CodepointToUnicode(pchar(c), bytesLen);
+    strArray[idx - 1] := IntToHex(codepoint)
   end;
 
   ToHexCodepoints := string.Join(' ', strArray)
@@ -333,6 +338,11 @@ begin
   FreeAndNil(emojiList)
 end;
 
+procedure TForm1.ResultGridClick(Sender: TObject);
+begin
+
+end;
+
 
 procedure TForm1.ResultGridDblClick(Sender: TObject);
 begin
@@ -360,7 +370,18 @@ end;
 
 procedure TForm1.ResultGridMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
-  UpdateSelectionDisplay
+  UpdateSelectionDisplay;
+
+  if button = mbRight then begin
+    if selectedEmoji <> nil then begin
+      favouriteList.Add(TFavourite.new(selectedEmoji));
+
+      { DescriptionMemo.text := favouriteList[favouriteList.Count - 1].Emoji.Emoji; }
+
+      { TODO: Check why this outputs 00000000 }
+      DescriptionMemo.text := favouriteList[favouriteList.Count - 1].ToHexCodepoints
+    end;
+  end;
 end;
 
 end.

@@ -53,6 +53,7 @@ object Form1: TForm1
     RowCount = 1
     TabAdvance = aaNone
     TabOrder = 2
+    OnClick = ResultGridClick
     OnDblClick = ResultGridDblClick
     OnKeyUp = ResultGridKeyUp
     OnMouseUp = ResultGridMouseUp
