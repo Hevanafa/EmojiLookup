@@ -332,8 +332,57 @@ begin
 end;
 
 function TForm1.LoadFavourites: boolean;
+var
+  f: text;
+  line: string;
+  pair: TStringArray;
+  rawEntry: string;
+
+  chunks: TStringArray;
+  hex: string;
+  emojiStr: string;
+
+  emoji: TEmoji;
+
 begin
-  LoadFavourites := false
+  if not FileExists(favouritesFile) then begin
+    LoadFavourites := false;
+    exit
+  end;
+
+  if emojiList = nil then
+    raise exception.create('emojiList is not yet loaded!');
+
+  AssignFile(f, favouritesFile);
+  reset(f);
+
+  while not EOF(f) do begin
+    readln(f, line);
+
+    pair := line.Split('#');
+    rawEntry := pair[0];
+    if trim(rawEntry) = '' then continue;
+
+    { Assuming that emojiList is loaded }
+
+    emojiStr := '';
+    chunks := rawEntry.split(' ');
+
+    for hex in chunks do
+      emojiStr := emojiStr + UnicodeToUTF8(StrToInt('$' + hex)) + ' ';
+
+    emojiStr := trim(emojistr);
+
+    for emoji in emojiList do
+      if emoji.Emoji = emojiStr then begin
+        favouriteList.add(TFavourite.New(emoji.clone));
+        break
+      end;
+  end;
+
+  closefile(f);
+
+  LoadFavourites := true
 end;
 
 procedure TForm1.FormShow(Sender: TObject);
@@ -347,7 +396,8 @@ begin
   lastEmojiSearchResult := TEmojiList.create;
   EmojiBufferEdit.clear;
 
-  LoadEmojis
+  LoadEmojis;
+  LoadFavourites
 end;
 
 procedure TForm1.FormClose(Sender: TObject; var CloseAction: TCloseAction);
