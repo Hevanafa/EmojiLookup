@@ -153,13 +153,10 @@ begin
   len := UTF8Length(femoji.emoji);
   SetLength(strArray, len);
 
-  { idx := 0; }
-
   c := '';
 
-  { for c in fEmoji.emoji do begin }
   for idx := 1 to UTF8Length(fEmoji.emoji) do begin
-    UTF8Copy(c, idx, 1);
+    c := UTF8Copy(fEmoji.emoji, idx, 1);
     codepoint := UTF8CodepointToUnicode(pchar(c), bytesLen);
     strArray[idx - 1] := IntToHex(codepoint)
   end;
