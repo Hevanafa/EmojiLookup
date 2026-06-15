@@ -7,9 +7,12 @@ unit Unit1;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls,
-  Graphics, Dialogs, StdCtrls, Grids,
-  LazUTF8, FGL, Math, Clipbrd, ComCtrls;
+  { Free Pascal stuff }
+  Classes, SysUtils, FGL,
+
+  { Lazarus GUI stuff }
+  Forms, Controls, Graphics, Dialogs,
+  StdCtrls, Grids, ComCtrls;
 
 type
 
@@ -62,6 +65,7 @@ type
     procedure ResultGridDblClick(Sender: TObject);
     procedure ResultGridKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure ResultGridMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+    procedure ResultGridPrepareCanvas(Sender: TObject; aCol, aRow: Integer; aState: TGridDrawState);
     procedure SearchEditChange(Sender: TObject);
 
   private
@@ -92,7 +96,7 @@ var
 
 implementation
 
-uses Windows;
+uses Math, Clipbrd, LCL, LazUTF8, Windows;
 
 {$R *.lfm}
 
@@ -371,12 +375,12 @@ begin
     emojiStr := '';
     chunks := rawEntry.split(' ');
 
-    DescriptionMemo.text := format('Attempting to parse "%s"', [rawEntry]);
+    { DescriptionMemo.text := format('Attempting to parse "%s"', [rawEntry]); }
 
     for hex in chunks do
       emojiStr := emojiStr + UnicodeToUTF8(StrToInt('$' + hex));
 
-    DescriptionMemo.append('Parsed: ' + emojistr);
+    { DescriptionMemo.append('Parsed: ' + emojistr); }
 
     emojiStr := trim(emojistr);
 
@@ -468,13 +472,23 @@ begin
   if button = mbRight then begin
     if selectedEmoji <> nil then begin
       favouriteList.Add(TFavourite.new(selectedEmoji));
-
-      { DescriptionMemo.text := favouriteList[favouriteList.Count - 1].Emoji.Emoji; }
-      { DescriptionMemo.text := favouriteList[favouriteList.Count - 1].ToHexCodepoints }
+      ResultGrid.InvalidateCell(col, row);
 
       SaveFavourites
     end;
   end;
+end;
+
+procedure TForm1.ResultGridPrepareCanvas(Sender: TObject; aCol, aRow: Integer; aState: TGridDrawState);
+var
+  cell: string;
+  favitem: TFavourite;
+begin
+  cell := ResultGrid.Cells[acol, arow];
+
+  for favitem in favouriteList do
+    if favitem.emoji.emoji = cell then
+      ResultGrid.canvas.Brush.Color := clMoneyGreen;
 end;
 
 end.
