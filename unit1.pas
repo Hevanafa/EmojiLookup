@@ -45,10 +45,13 @@ type
 
   TFavourite = class
   private
-    fEmoji: TEmoji;
+    { fEmoji: TEmoji; }
+    fCodepoints: string;
   public
     constructor New(const codepoints: string);
-    property Emoji: TEmoji read fEmoji;
+
+    { property Emoji: TEmoji read fEmoji; }
+    property Codepoints: string read fCodepoints;
   end;
 
   TEmojiList = specialize TFPGObjectList<TEmoji>;
@@ -165,8 +168,8 @@ end; }
 
 constructor TFavourite.New(const codepoints: string);
 begin
-  { fEmoji := emoji.clone }
-  fEmoji := TEmoji.New(codepoints)
+  { fEmoji := TEmoji.New(codepoints) }
+  fCodepoints := codepoints
 end;
 
 function TEmoji.ToHexCodepoints: string;
@@ -345,7 +348,7 @@ begin
   Rewrite(f);
 
   for favitem in favouriteList do
-    writeln(f, favitem.emoji.ToHexCodepoints);
+    writeln(f, favitem.Codepoints);
 
   closefile(f)
 end;
@@ -403,7 +406,7 @@ begin
   IsInFavourites := false;
 
   for favitem in favouriteList do
-    if favitem.emoji.Codepoints = codepoints then begin
+    if favitem.Codepoints = codepoints then begin
       IsInFavourites := true;
       exit
     end;
@@ -425,7 +428,7 @@ begin
   if not IsInFavourites(codepoints) then exit;
 
   for a:=0 to favouriteList.count - 1 do
-    if favouriteList[a].emoji.codepoints = codepoints then begin
+    if favouriteList[a].codepoints = codepoints then begin
       favouriteList.Delete(a);
       exit
     end;
@@ -517,13 +520,22 @@ end;
 procedure TForm1.ResultGridPrepareCanvas(Sender: TObject; aCol, aRow: Integer; aState: TGridDrawState);
 var
   cell: string;
+  idx: word;
   favitem: TFavourite;
 begin
+  {
   cell := ResultGrid.Cells[acol, arow];
 
   for favitem in favouriteList do
     if favitem.emoji.emoji = cell then
       ResultGrid.canvas.Brush.Color := clMoneyGreen;
+  }
+
+  idx := arow * ResultGrid.ColCount + acol;
+
+  if (idx < lastEmojiSearchResult.Count)
+    and IsInFavourites(lastEmojiSearchResult[idx].Codepoints) then
+    ResultGrid.canvas.Brush.Color := clMoneyGreen;
 end;
 
 end.
