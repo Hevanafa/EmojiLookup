@@ -58,14 +58,11 @@ type
     procedure CopyButtonClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
-    procedure ResultGridClick(Sender: TObject);
 
     procedure ResultGridDblClick(Sender: TObject);
     procedure ResultGridKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure ResultGridMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure SearchEditChange(Sender: TObject);
-
-    procedure UpdateSelectedEmoji;
 
   private
     emojiList: TEmojiList;
@@ -77,6 +74,7 @@ type
     const favouritesFile = 'favourites.txt';
 
     procedure LoadEmojis;
+    procedure UpdateSelectedEmoji;
     procedure UpdateSelectionDisplay;
 
     procedure SaveFavourites;
@@ -359,12 +357,6 @@ begin
   FreeAndNil(emojiList)
 end;
 
-procedure TForm1.ResultGridClick(Sender: TObject);
-begin
-
-end;
-
-
 procedure TForm1.ResultGridDblClick(Sender: TObject);
 begin
   if selectedEmoji = nil then exit;
@@ -410,8 +402,9 @@ begin
       favouriteList.Add(TFavourite.new(selectedEmoji));
 
       { DescriptionMemo.text := favouriteList[favouriteList.Count - 1].Emoji.Emoji; }
+      { DescriptionMemo.text := favouriteList[favouriteList.Count - 1].ToHexCodepoints }
 
-      DescriptionMemo.text := favouriteList[favouriteList.Count - 1].ToHexCodepoints
+      SaveFavourites
     end;
   end;
 end;
