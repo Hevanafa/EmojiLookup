@@ -119,26 +119,28 @@ var
   searchTerm: string;
   emoji: temoji;
   col, row: word;
+  startTick, endTick: TDateTime;
 begin
   if emojiList = nil then exit;
 
   searchTerm := lowercase(trim(SearchEdit.Text));
   if searchTerm = '' then begin
     ResultGrid.clear;
+    DescriptionMemo.text := format(
+      'Loaded %d emojis' + LineEnding + 'Enter a few words to search', [
+        emojiList.count
+      ]);
+
     exit;
   end;
 
-  { emojis := TEmojiList.create; }
+  startTick := now;
+
   lastEmojiSearchResult.clear;
 
-  for emoji in emojiList do begin
-    { for debugging }
-    { DescriptionMemo.Text := 'Attempting to index ' + emoji.Descriptor;
-    Invalidate; }
-
+  for emoji in emojiList do
     if emoji.LowerCaseDescriptor.contains(searchTerm) then
       lastEmojiSearchResult.Add(emoji.clone);
-  end;
 
   ResultGrid.clear;
   ResultGrid.RowCount := ceil(lastEmojiSearchResult.Count / 8);
@@ -155,8 +157,11 @@ begin
     end;
   end;
 
-  { emojis.clear;
-  emojis.free }
+  endTick := now;
+
+  DescriptionMemo.text := format('Found %d emojis in %.2f seconds', [
+    lastEmojiSearchResult.Count, (endTick - startTick) * SecsPerDay
+  ]);
 end;
 
 procedure TForm1.UpdateSelectedEmoji;
