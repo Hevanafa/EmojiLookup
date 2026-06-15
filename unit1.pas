@@ -167,14 +167,16 @@ begin
   if emojiList = nil then exit;
 
   if ResultGrid.SelectedRangeCount = 0 then begin
-    FreeAndNil(selectedEmoji);
+    { FreeAndNil(selectedEmoji); }
+    selectedEmoji := nil;
     exit
   end;
 
   idx := ResultGrid.Row * ResultGrid.ColCount + ResultGrid.Col;
 
   if idx >= lastEmojiSearchResult.Count then begin
-    FreeAndNil(selectedEmoji);
+    { FreeAndNil(selectedEmoji); }
+    selectedEmoji := nil;
     exit
   end;
 
@@ -247,7 +249,10 @@ begin
 
   UpdateSelectedEmoji;
 
-  if selectedEmoji = nil then exit;
+  if selectedEmoji = nil then begin
+    DescriptionMemo.clear;
+    exit
+  end;
 
   DescriptionMemo.Text :=
     selectedEmoji.Descriptor; { LineEnding }
