@@ -98,6 +98,7 @@ object Form1: TForm1
         Width = 200
       end>
     ParentBiDiMode = False
-    SimpleText = 'v0.1 - By Hevanafa (Jun 2026)'
+    SimpleText = 'v0.1.1 - By Hevanafa (Jun 2026)'
+    SizeGrip = False
   end
 end
