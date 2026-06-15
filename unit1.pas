@@ -65,6 +65,9 @@ type
     procedure SearchEditChange(Sender: TObject);
 
   private
+    { in seconds, assigned in LoadEmojis }
+    loadingTime: double;
+
     emojiList: TEmojiList;
     favouriteList: TFavouriteList;
 
@@ -289,13 +292,7 @@ begin
 
   endTick := now;
 
-  { for emoji in emojiList do
-    DescriptionMemo.append(emoji.Emoji + ': ' + emoji.Descriptor); }
-
-  DescriptionMemo.Text := format(
-    'Loaded %d emojis in %.2f seconds', [
-      emojiList.count,
-      (endTick - startTick) * SecsPerDay])
+  loadingTime := (endTick - startTick) * SecsPerDay
 end;
 
 procedure TForm1.UpdateSelectionDisplay;
@@ -397,7 +394,18 @@ begin
   EmojiBufferEdit.clear;
 
   LoadEmojis;
-  LoadFavourites
+  LoadFavourites;
+
+  { for emoji in emojiList do
+    DescriptionMemo.append(emoji.Emoji + ': ' + emoji.Descriptor); }
+
+  DescriptionMemo.Text := format(
+    'Loaded %d emojis in %.2f seconds', [
+      emojiList.count,
+      loadingTime]);
+
+  if favouriteList.Count > 0 then
+    DescriptionMemo.Append(format('Loaded %d favourites', [favouriteList.count]));
 end;
 
 procedure TForm1.FormClose(Sender: TObject; var CloseAction: TCloseAction);
