@@ -88,6 +88,7 @@ type
 
     const favouritesFile = 'favourites.txt';
 
+    procedure AddFavourite(const codepoints: string);
     procedure LoadEmojis;
     procedure UpdateSelectedEmoji;
     procedure UpdateSelectionDisplay;
@@ -351,7 +352,7 @@ var
   f: text;
   line: string;
   pair: TStringArray;
-  rawEntry: string;
+  rawCodepoints: string;
 
   chunks: TStringArray;
   hex: string;
@@ -378,30 +379,30 @@ begin
 
     if line.Contains('#') then begin
       pair := line.Split('#');
-      rawEntry := trim(pair[0]);
+      rawCodepoints := trim(pair[0]);
 
-      if rawEntry = '' then continue;
+      if rawCodepoints = '' then continue;
     end else
-      rawEntry := trim(line);
+      rawCodepoints := trim(line);
 
-    emojiStr := '';
-    chunks := rawEntry.split(' ');
-
-    for hex in chunks do
-      emojiStr := emojiStr + UnicodeToUTF8(StrToInt('$' + hex));
-
-    emojiStr := trim(emojistr);
-
-    for emoji in emojiList do
-      if emoji.Emoji = emojiStr then begin
-        favouriteList.add(TFavourite.New(emoji.ToHexCodepoints));
-        break
-      end;
+    AddFavourite(rawCodepoints)
   end;
 
   closefile(f);
 
   LoadFavourites := true
+end;
+
+procedure TForm1.AddFavourite(const codepoints: string);
+var
+  favitem: TFavourite;
+begin
+  { Find duplicates }
+  for favitem in favouriteList do
+    if favitem.Emoji.Codepoints = codepoints then
+      exit;
+
+  favouriteList.Add(TFavourite.new(codepoints));
 end;
 
 procedure TForm1.FormShow(Sender: TObject);
@@ -474,8 +475,7 @@ begin
 
   if button = mbRight then begin
     if selectedEmoji <> nil then begin
-      favouriteList.Add(TFavourite.new(selectedEmoji.ToHexCodepoints));
-
+      AddFavourite(selectedEmoji.Codepoints);
       ResultGrid.InvalidateCell(col, row);
 
       SaveFavourites
