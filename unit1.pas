@@ -335,8 +335,8 @@ begin
   end;
 
   DescriptionMemo.Text :=
-    selectedEmoji.Descriptor; { LineEnding }
-    { 'Codepoints: ' + selectedEmoji.codepo; }
+    selectedEmoji.Descriptor + LineEnding +
+    'Codepoints: ' + selectedEmoji.Codepoints;
 end;
 
 procedure TForm1.SaveFavourites;
