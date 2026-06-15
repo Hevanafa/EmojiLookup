@@ -19,7 +19,8 @@ type
   { TEmoji }
   TEmoji = class
   private
-    fCodepoints: array of longword;
+    fCodepoints: string;
+    fDWordCodepoints: array of longword;
     fEmoji: string;
     fDescriptor, fLowerCaseDescriptor: string;
 
@@ -112,16 +113,18 @@ var
   a: word;
   s: string;
 begin
+  fCodepoints := rawCodepoints;
+
   chunks := trim(rawCodepoints).Split(' ');
-  SetLength(fCodepoints, length(chunks));
+  SetLength(fDWordCodepoints, length(chunks));
 
   for a := 0 to Length(chunks) - 1 do
-    fCodepoints[a] := StrToInt('$' + chunks[a]);
+    fDWordCodepoints[a] := StrToInt('$' + chunks[a]);
 
   fEmoji := '';
 
-  for a:=0 to length(fCodepoints) - 1 do
-    fEmoji := fEmoji + UnicodeToUTF8(fCodepoints[a]);
+  for a:=0 to length(fDWordCodepoints) - 1 do
+    fEmoji := fEmoji + UnicodeToUTF8(fDWordCodepoints[a]);
 
   { "(emoji) E0.6 grinning face with big eyes" }
   fDescriptor := trim(aDescriptor);
@@ -137,7 +140,7 @@ begin
   clone := TEmoji.new;
 
   clone.fEmoji := fEmoji;
-  clone.fCodepoints := copy(fCodepoints);
+  clone.fDWordCodepoints := copy(fDWordCodepoints);
   clone.fDescriptor := fDescriptor;
   Clone.fLowerCaseDescriptor := fLowerCaseDescriptor
 end;
@@ -472,6 +475,7 @@ begin
   if button = mbRight then begin
     if selectedEmoji <> nil then begin
       favouriteList.Add(TFavourite.new(selectedEmoji));
+
       ResultGrid.InvalidateCell(col, row);
 
       SaveFavourites
