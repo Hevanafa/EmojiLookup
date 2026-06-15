@@ -40,8 +40,9 @@ type
     ResultGrid: TStringGrid;
     StatusBar1: TStatusBar;
 
-    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormShow(Sender: TObject);
+    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
+
     procedure ResultGridDblClick(Sender: TObject);
     procedure ResultGridKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure ResultGridMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
@@ -203,8 +204,11 @@ var
   pair: TStringArray;
 
   emoji: TEmoji;
+  startTick, endTick: TDateTime;
 begin
   emojiList := TEmojiList.create;
+
+  startTick := now;
 
   AssignFile(f, 'data\emoji-test.txt');
   {$I-} reset(f); {$I+}
@@ -234,10 +238,15 @@ begin
 
   closefile(f);
 
+  endTick := now;
+
   { for emoji in emojiList do
     DescriptionMemo.append(emoji.Emoji + ': ' + emoji.Descriptor); }
 
-  DescriptionMemo.Text := format('Loaded %d emojis', [emojiList.count])
+  DescriptionMemo.Text := format(
+    'Loaded %d emojis in %.2f seconds', [
+      emojiList.count,
+      (endTick - startTick) * SecsPerDay])
 end;
 
 procedure TForm1.UpdateSelectionDisplay;
@@ -270,6 +279,13 @@ begin
   LoadEmojis
 end;
 
+procedure TForm1.FormClose(Sender: TObject; var CloseAction: TCloseAction);
+begin
+  freeandnil(lastEmojiSearchResult);
+  FreeAndNil(emojiList)
+end;
+
+
 procedure TForm1.ResultGridDblClick(Sender: TObject);
 begin
   if selectedEmoji = nil then exit;
@@ -284,12 +300,6 @@ end;
 procedure TForm1.ResultGridMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
   UpdateSelectionDisplay
-end;
-
-procedure TForm1.FormClose(Sender: TObject; var CloseAction: TCloseAction);
-begin
-  freeandnil(lastEmojiSearchResult);
-  FreeAndNil(emojiList)
 end;
 
 end.
