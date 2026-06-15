@@ -19,8 +19,9 @@ type
   { TEmoji }
   TEmoji = class
   private
-    { fCodepoints: string; }
+    fCodepoints: string;
     fDWordCodepoints: array of longword;
+
     fEmoji: string;
     fDescriptor, fLowerCaseDescriptor: string;
 
@@ -31,10 +32,12 @@ type
 
     { function Clone: TEmoji; }
 
-    property Emoji: string read fEmoji write fEmoji;
-    property Descriptor: string read fDescriptor write fDescriptor;
-    property LowerCaseDescriptor: string read fLowerCaseDescriptor write fLowerCaseDescriptor;
+    property Codepoints: string read fCodepoints;
+    property Emoji: string read fEmoji;
+    property Descriptor: string read fDescriptor;
+    property LowerCaseDescriptor: string read fLowerCaseDescriptor;
 
+    { Performs conversion from the Emoji string, carried over from TFavourite back then }
     function ToHexCodepoints: string;
   end;
 
