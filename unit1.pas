@@ -132,7 +132,7 @@ var
   a: word;
   s: string;
 begin
-  { fCodepoints := rawCodepoints; }
+  fCodepoints := rawCodepoints;
 
   chunks := trim(rawCodepoints).Split(' ');
   SetLength(fDWordCodepoints, length(chunks));
@@ -407,6 +407,8 @@ begin
 
   for favitem in favouriteList do
     if favitem.Codepoints = codepoints then begin
+      { DescriptionMemo.text := 'Found "' + codepoints + '" in favs'; }
+
       IsInFavourites := true;
       exit
     end;
@@ -419,6 +421,8 @@ begin
   if IsInFavourites(codepoints) then exit;
 
   favouriteList.Add(TFavourite.new(codepoints));
+
+  DescriptionMemo.text := 'Adding "' + codepoints + '" into favs';
 end;
 
 procedure TForm1.RemoveFavourite(const codepoints: string);
@@ -501,7 +505,8 @@ begin
 
   ResultGrid.SetFocus;
 
-  UpdateSelectionDisplay;
+  if button = mbLeft then
+    UpdateSelectionDisplay;
 
   if button = mbRight then begin
     if selectedEmoji <> nil then begin
@@ -510,11 +515,12 @@ begin
       else
         AddFavourite(selectedEmoji.Codepoints);
 
+      UpdateSelectionDisplay;
       ResultGrid.InvalidateCell(col, row);
-
       SaveFavourites
     end;
   end;
+
 end;
 
 procedure TForm1.ResultGridPrepareCanvas(Sender: TObject; aCol, aRow: Integer; aState: TGridDrawState);
