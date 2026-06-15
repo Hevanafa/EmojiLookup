@@ -366,7 +366,19 @@ begin
 end;
 
 procedure TForm1.ResultGridMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+var
+  col, row: longint;
 begin
+  { Select cell at position }
+  ResultGrid.MouseToCell(x, y, col, row);
+
+  if (col >= 0) and (row >= 0) then begin
+    ResultGrid.Col := col;
+    ResultGrid.row := row;
+  end;
+
+  ResultGrid.SetFocus;
+
   UpdateSelectionDisplay;
 
   if button = mbRight then begin
@@ -375,7 +387,6 @@ begin
 
       { DescriptionMemo.text := favouriteList[favouriteList.Count - 1].Emoji.Emoji; }
 
-      { TODO: Check why this outputs 00000000 }
       DescriptionMemo.text := favouriteList[favouriteList.Count - 1].ToHexCodepoints
     end;
   end;
