@@ -43,6 +43,7 @@ type
     ResultGrid: TStringGrid;
     StatusBar1: TStatusBar;
 
+    procedure CopyButtonClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
 
@@ -68,7 +69,10 @@ type
 var
   Form1: TForm1;
 
+
 implementation
+
+uses Windows;
 
 {$R *.lfm}
 
@@ -286,7 +290,20 @@ end;
 procedure TForm1.ResultGridDblClick(Sender: TObject);
 begin
   if selectedEmoji = nil then exit;
-  Clipboard.AsText := selectedEmoji.Emoji
+
+  EmojiBufferEdit.Text := EmojiBufferEdit.Text + selectedEmoji.emoji
+end;
+
+procedure TForm1.CopyButtonClick(Sender: TObject);
+begin
+  if trim(EmojiBufferEdit.Text) = '' then begin
+    MessageBox(0, 'No emojis to copy!', 'Empty Box', MB_OK);
+    exit
+  end;
+
+  Clipboard.AsText := EmojiBufferEdit.text;
+
+  MessageBox(0, 'Copied to clipboard!', 'Copy Emoji', MB_OK)
 end;
 
 procedure TForm1.ResultGridKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);

@@ -82,6 +82,7 @@ object Form1: TForm1
     Anchors = [akRight, akBottom]
     Caption = 'Copy'
     TabOrder = 5
+    OnClick = CopyButtonClick
   end
   object StatusBar1: TStatusBar
     Left = 0
