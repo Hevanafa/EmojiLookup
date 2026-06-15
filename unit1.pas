@@ -35,6 +35,9 @@ type
   { TForm1 }
 
   TForm1 = class(TForm)
+    CopyButton: TButton;
+    EmojiBufferEdit: TEdit;
+    Label1: TLabel;
     SearchEdit: TEdit;
     DescriptionMemo: TMemo;
     ResultGrid: TStringGrid;
@@ -268,6 +271,7 @@ begin
   ResultGrid.Clear;
 
   lastEmojiSearchResult := TEmojiList.create;
+  EmojiBufferEdit.clear;
 
   LoadEmojis
 end;

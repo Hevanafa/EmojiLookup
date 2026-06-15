@@ -21,8 +21,8 @@ object Form1: TForm1
   end
   object DescriptionMemo: TMemo
     Left = 4
-    Height = 80
-    Top = 280
+    Height = 64
+    Top = 296
     Width = 422
     Anchors = [akLeft, akRight, akBottom]
     Lines.Strings = (
@@ -35,7 +35,7 @@ object Form1: TForm1
   end
   object ResultGrid: TStringGrid
     Left = 4
-    Height = 240
+    Height = 223
     Top = 33
     Width = 420
     Anchors = [akTop, akLeft, akRight, akBottom]
@@ -56,6 +56,32 @@ object Form1: TForm1
     OnDblClick = ResultGridDblClick
     OnKeyUp = ResultGridKeyUp
     OnMouseUp = ResultGridMouseUp
+  end
+  object Label1: TLabel
+    Left = 4
+    Height = 15
+    Top = 268
+    Width = 78
+    Anchors = [akLeft, akBottom]
+    Caption = 'Emojis to copy'
+  end
+  object EmojiBufferEdit: TEdit
+    Left = 88
+    Height = 23
+    Top = 264
+    Width = 256
+    Anchors = [akLeft, akRight, akBottom]
+    TabOrder = 4
+    Text = 'EmojiBufferEdit'
+  end
+  object CopyButton: TButton
+    Left = 349
+    Height = 25
+    Top = 264
+    Width = 75
+    Anchors = [akRight, akBottom]
+    Caption = 'Copy'
+    TabOrder = 5
   end
   object StatusBar1: TStatusBar
     Left = 0
