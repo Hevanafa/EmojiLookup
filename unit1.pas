@@ -381,17 +381,11 @@ begin
     end else
       rawEntry := trim(line);
 
-    { Assuming that emojiList is loaded }
-
     emojiStr := '';
     chunks := rawEntry.split(' ');
 
-    { DescriptionMemo.text := format('Attempting to parse "%s"', [rawEntry]); }
-
     for hex in chunks do
       emojiStr := emojiStr + UnicodeToUTF8(StrToInt('$' + hex));
-
-    { DescriptionMemo.append('Parsed: ' + emojistr); }
 
     emojiStr := trim(emojistr);
 
@@ -401,8 +395,6 @@ begin
         break
       end;
   end;
-
-  { DescriptionMemo.Text := format('Loaded %d entries', [favouriteList.count]); }
 
   closefile(f);
 
@@ -421,13 +413,10 @@ begin
   LoadEmojis;
   LoadFavourites;
 
-  { for emoji in emojiList do
-    DescriptionMemo.append(emoji.Emoji + ': ' + emoji.Descriptor); }
-
-  { DescriptionMemo.Text := format(
+  DescriptionMemo.Text := format(
     'Loaded %d emojis in %.2f seconds', [
       emojiList.count,
-      loadingTime]); }
+      loadingTime]);
 
   if favouriteList.Count > 0 then
     DescriptionMemo.Append(format('Loaded %d favourites', [favouriteList.count]));
