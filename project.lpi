@@ -5,15 +5,23 @@
     <PathDelim Value="\"/>
     <General>
       <SessionStorage Value="InProjectDir"/>
-      <Title Value="project"/>
+      <Title Value="EmojiLookup"/>
       <Scaled Value="True"/>
       <ResourceType Value="res"/>
       <UseXPManifest Value="True"/>
       <XPManifest>
         <DpiAware Value="True"/>
+        <TextName Value="com.hevanafa.emojilookup"/>
+        <TextDesc Value="An app to look up emojis"/>
       </XPManifest>
       <Icon Value="0"/>
     </General>
+    <VersionInfo>
+      <UseVersionInfo Value="True"/>
+      <MinorVersionNr Value="1"/>
+      <Language Value="0809"/>
+      <StringTable Comments="An app to look up emojis" CompanyName="Hevanafa" FileDescription="An app to look up emojis" InternalName="EmojiLookup" LegalCopyright="(c) Hevanafa 2026" OriginalFilename="EmojiLookup" ProductName="EmojiLookup" ProductVersion="0.1"/>
+    </VersionInfo>
     <BuildModes>
       <Item Name="Debug" Default="True"/>
       <Item Name="Release">
@@ -70,6 +78,7 @@
         <Filename Value="unit1.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="Form1"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="Unit1"/>
       </Unit>

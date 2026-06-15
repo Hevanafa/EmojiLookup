@@ -9,7 +9,7 @@ interface
 uses
   Classes, SysUtils, Forms, Controls,
   Graphics, Dialogs, StdCtrls, Grids,
-  LazUTF8, FGL, Math, Clipbrd;
+  LazUTF8, FGL, Math, Clipbrd, ComCtrls;
 
 type
 
@@ -38,6 +38,7 @@ type
     SearchEdit: TEdit;
     DescriptionMemo: TMemo;
     ResultGrid: TStringGrid;
+    StatusBar1: TStatusBar;
 
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormShow(Sender: TObject);

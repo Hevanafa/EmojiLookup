@@ -3,7 +3,7 @@ object Form1: TForm1
   Height = 388
   Top = 100
   Width = 432
-  Caption = 'Form1'
+  Caption = 'Emoji Lookup'
   ClientHeight = 388
   ClientWidth = 432
   LCLVersion = '4.6.0.0'
@@ -21,7 +21,7 @@ object Form1: TForm1
   end
   object DescriptionMemo: TMemo
     Left = 4
-    Height = 99
+    Height = 80
     Top = 280
     Width = 422
     Anchors = [akLeft, akRight, akBottom]
@@ -56,5 +56,19 @@ object Form1: TForm1
     OnDblClick = ResultGridDblClick
     OnKeyUp = ResultGridKeyUp
     OnMouseUp = ResultGridMouseUp
+  end
+  object StatusBar1: TStatusBar
+    Left = 0
+    Height = 23
+    Top = 365
+    Width = 432
+    Panels = <    
+      item
+        Alignment = taRightJustify
+        Text = 'v0.1 - By Hevanafa (Jun 2026)'
+        Width = 200
+      end>
+    ParentBiDiMode = False
+    SimpleText = 'v0.1 - By Hevanafa (Jun 2026)'
   end
 end
