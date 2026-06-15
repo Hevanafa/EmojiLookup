@@ -30,7 +30,18 @@ type
     property LowerCaseDescriptor: string read fLowerCaseDescriptor write fLowerCaseDescriptor;
   end;
 
+  { TFavourite }
+
+  TFavourite = class
+  private
+    fEmoji: TEmoji;
+  public
+    constructor New(emoji: TEmoji);
+    function ToHexCodepoints: string;
+  end;
+
   TEmojiList = specialize TFPGObjectList<TEmoji>;
+  TFavouriteList = specialize TFPGObjectList<TFavourite>;
 
   { TForm1 }
 
@@ -56,6 +67,7 @@ type
 
   private
     emojiList: TEmojiList;
+    favouriteList: TFavouriteList;
 
     lastEmojiSearchResult: TEmojiList;
     selectedEmoji: TEmoji;
@@ -116,6 +128,38 @@ begin
   clone.fCodepoints := copy(fCodepoints);
   clone.fDescriptor := fDescriptor;
   Clone.fLowerCaseDescriptor := fLowerCaseDescriptor
+end;
+
+{ TFavourite }
+
+constructor TFavourite.New(emoji: TEmoji);
+begin
+  fEmoji := emoji.clone
+end;
+
+function TFavourite.ToHexCodepoints: string;
+var
+  codepoint: longword;
+  len: word;
+  c: string;
+  strArray: TStringArray;
+  bytesConsumed: longint;
+  idx: word;
+begin
+  ToHexCodepoints := '';
+
+  len := UTF8Length(femoji.emoji);
+  SetLength(strArray, len);
+
+  idx := 0;
+
+  for c in fEmoji.emoji do begin
+    codepoint := UTF8CodepointToUnicode(pchar(c), bytesConsumed);
+    strArray[idx] := IntToHex(codepoint);
+    inc(idx)
+  end;
+
+  ToHexCodepoints := string.Join(' ', strArray)
 end;
 
 
@@ -274,6 +318,8 @@ begin
   DescriptionMemo.clear;
   ResultGrid.Clear;
 
+  favouriteList := TFavouriteList.create;
+
   lastEmojiSearchResult := TEmojiList.create;
   EmojiBufferEdit.clear;
 
@@ -282,7 +328,8 @@ end;
 
 procedure TForm1.FormClose(Sender: TObject; var CloseAction: TCloseAction);
 begin
-  freeandnil(lastEmojiSearchResult);
+  FreeAndNil(lastEmojiSearchResult);
+  FreeAndNil(favouriteList);
   FreeAndNil(emojiList)
 end;
 
