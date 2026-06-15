@@ -48,8 +48,6 @@ type
     procedure ResultGridMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure SearchEditChange(Sender: TObject);
 
-    { Returns an empty string if there's nothing selected }
-    { function GetSelectedEmoji: TEmoji; }
     procedure UpdateSelectedEmoji;
 
   private
@@ -183,16 +181,6 @@ begin
 
   selectedEmoji := lastEmojiSearchResult[idx]
 end;
-
-{ function TForm1.GetSelectedEmoji: string;
-begin
-  GetSelectedEmoji := '';
-  if ResultGrid.SelectedRangeCount = 0 then exit;
-
-  GetSelectedEmoji := ResultGrid.Cells[ResultGrid.Col, ResultGrid.Row]
-end; }
-
-
 
 procedure TForm1.LoadEmojis;
 var
