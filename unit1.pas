@@ -88,10 +88,13 @@ type
 
     const favouritesFile = 'favourites.txt';
 
-    procedure AddFavourite(const codepoints: string);
     procedure LoadEmojis;
     procedure UpdateSelectedEmoji;
     procedure UpdateSelectionDisplay;
+
+    function IsInFavourites(const codepoints: string): boolean;
+    procedure AddFavourite(const codepoints: string);
+    procedure RemoveFavourite(const codepoints: string);
 
     procedure SaveFavourites;
     function LoadFavourites: boolean;
@@ -393,17 +396,41 @@ begin
   LoadFavourites := true
 end;
 
+function TForm1.IsInFavourites(const codepoints: string): boolean;
+var
+  favitem: TFavourite;
+begin
+  IsInFavourites := false;
+
+  for favitem in favouriteList do
+    if favitem.emoji.Codepoints = codepoints then begin
+      IsInFavourites := true;
+      exit
+    end;
+end;
+
 procedure TForm1.AddFavourite(const codepoints: string);
 var
   favitem: TFavourite;
 begin
-  { Find duplicates }
-  for favitem in favouriteList do
-    if favitem.Emoji.Codepoints = codepoints then
-      exit;
+  if IsInFavourites(codepoints) then exit;
 
   favouriteList.Add(TFavourite.new(codepoints));
 end;
+
+procedure TForm1.RemoveFavourite(const codepoints: string);
+var
+  a: word;
+begin
+  if not IsInFavourites(codepoints) then exit;
+
+  for a:=0 to favouriteList.count - 1 do
+    if favouriteList[a].emoji.codepoints = codepoints then begin
+      favouriteList.Delete(a);
+      exit
+    end;
+end;
+
 
 procedure TForm1.FormShow(Sender: TObject);
 begin
