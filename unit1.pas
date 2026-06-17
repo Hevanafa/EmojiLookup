@@ -295,6 +295,8 @@ procedure TForm1.SearchEditChange(Sender: TObject);
 var
   localSearchTerm: string;
   emoji: TEmoji;
+  favitem: TFavourite;
+
   startTick, endTick: TDateTime;
 begin
   if emojiList = nil then exit;
@@ -312,9 +314,21 @@ begin
 
   lastEmojiSearchResult.clear;
 
-  for emoji in emojiList do
-    if emoji.LowerCaseDescriptor.contains(localSearchTerm) then
-      lastEmojiSearchResult.Add(emoji);
+  case fActualViewMode of
+    ViewModeAll: begin
+      for emoji in emojiList do
+        if emoji.LowerCaseDescriptor.contains(localSearchTerm) then
+          lastEmojiSearchResult.Add(emoji);
+    end;
+    ViewModeFavourites: begin
+      for favitem in favouriteList do begin
+        emoji := FindEmojiByCodepoints(favitem.Codepoints);
+
+        if emoji.LowerCaseDescriptor.Contains(localSearchTerm) then
+          lastEmojiSearchResult.add(emoji);
+      end;
+    end;
+  end;
 
   ClearGrid;
 
@@ -358,7 +372,7 @@ begin
 
   if fActualViewMode = ViewModeFavourites then begin
     if GetSearchTerm = '' then
-      selectedEmoji := FindEmojiByCodepoints(favouriteList[idx])
+      selectedEmoji := FindEmojiByCodepoints(favouriteList[idx].Codepoints)
     else begin
       { Thee same as ViewModeAll }
       if idx >= lastEmojiSearchResult.Count then begin
