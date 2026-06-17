@@ -100,7 +100,7 @@ type
     procedure RemoveFavourite(const codepoints: string);
 
     { Returns an object reference to emojiList }
-    function FindEmoji(const codepoints: string): TEmoji;
+    function FindByCodepoints(const codepoints: string): TEmoji;
 
     procedure SaveFavourites;
     function LoadFavourites: boolean;
@@ -443,17 +443,17 @@ begin
     end;
 end;
 
-function TForm1.FindEmoji(const codepoints: string): TEmoji;
+function TForm1.FindByCodepoints(const codepoints: string): TEmoji;
 var
   e: TEmoji;
 begin
-  FindEmoji := nil;
+  FindByCodepoints := nil;
 
   if emojiList = nil then exit;
 
   for e in emojiList do
     if e.Codepoints = codepoints then begin
-      FindEmoji := e;
+      FindByCodepoints := e;
       exit
     end;
 end;
