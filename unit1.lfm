@@ -17,6 +17,7 @@ object Form1: TForm1
     Anchors = [akTop, akLeft, akRight]
     TabOrder = 0
     Text = 'SearchEdit'
+    TextHint = 'Search emoji...'
     OnChange = SearchEditChange
   end
   object DescriptionMemo: TMemo
