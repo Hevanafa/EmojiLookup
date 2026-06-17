@@ -99,7 +99,9 @@ type
     lastEmojiSearchResult: TEmojiList;
     selectedEmoji: TEmoji;
 
-    const favouritesFile = 'favourites.txt';
+    const
+      FavouritesFile = 'favourites.txt';
+      DefaultColCount = 8;
 
     procedure AppendToResult(const content: string);
     function GetSearchTerm: string;
@@ -223,7 +225,6 @@ var
   row, col: smallint;
   foundEmpty: boolean;
 begin
-  { TODO: Find an empty cell in ResultGrid }
   foundEmpty := false;
 
   for row:=0 to ResultGrid.RowCount - 1 do
@@ -252,6 +253,9 @@ begin
 
   ResultGrid.Clear;
 
+  DescriptionMemo.Text := format('colcount: %d', [ResultGrid.ColCount]);
+  Invalidate;
+
   ResultGrid.RowCount := ceil(emojiList.Count / ResultGrid.ColCount);
 
   row := 0;  col := 0;
@@ -277,10 +281,10 @@ var
 begin
   ResultGrid.Clear;
 
-  ResultGrid.RowCount := ceil(favouriteList.Count / ResultGrid.ColCount);
+  { ResultGrid.RowCount := ceil(favouriteList.Count / ResultGrid.ColCount); }
 
-  { TODO: for favitem in favouriteList do }
-
+  for favitem in favouriteList do
+    AppendToResult(FindByCodepoints(favitem.Codepoints).Emoji);
 end;
 
 procedure TForm1.SearchEditChange(Sender: TObject);
@@ -431,7 +435,7 @@ var
   f: text;
   favitem: TFavourite;
 begin
-  AssignFile(f, favouritesFile);
+  AssignFile(f, FavouritesFile);
   Rewrite(f);
 
   for favitem in favouriteList do
@@ -456,7 +460,7 @@ var
 begin
   favouriteList := TFavouriteList.create;
 
-  if not FileExists(favouritesFile) then begin
+  if not FileExists(FavouritesFile) then begin
     LoadFavourites := false;
     exit
   end;
@@ -464,7 +468,7 @@ begin
   if emojiList = nil then
     raise exception.create('emojiList is not yet loaded!');
 
-  AssignFile(f, favouritesFile);
+  AssignFile(f, FavouritesFile);
   reset(f);
 
   while not EOF(f) do begin
@@ -561,7 +565,9 @@ begin
     DescriptionMemo.Append(format('Loaded %d favourites', [favouriteList.count]));
 
   SearchEdit.clear;
-  ResultGrid.Clear;
+
+  ResultGrid.clear;
+  ResultGrid.ColCount := DefaultColCount;
 
   actualViewMode := ViewModeAll;
   lastSearchTerm := '';
@@ -569,7 +575,9 @@ begin
   lastEmojiSearchResult := TEmojiList.Create(false);
   EmojiBufferEdit.clear;
 
-  ShowAllEmojis
+  DescriptionMemo.text := format('colcount: %d', [ResultGrid.ColCount]);
+
+  { ShowAllEmojis }
 end;
 
 procedure TForm1.FormClose(Sender: TObject; var CloseAction: TCloseAction);
