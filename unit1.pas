@@ -118,7 +118,7 @@ type
 
     procedure UpdateSelectedEmoji;
     { This proceedure depends on UpdateSelectedEmoji }
-    procedure UpdateSelectionDisplay;
+    procedure UpdateSelectionDescription;
 
     function IsInFavourites(const codepoints: string): boolean;
     procedure AddFavourite(const codepoints: string);
@@ -443,7 +443,7 @@ begin
   loadingTime := (endTick - startTick) * SecsPerDay
 end;
 
-procedure TForm1.UpdateSelectionDisplay;
+procedure TForm1.UpdateSelectionDescription;
 begin
   if selectedEmoji = nil then begin
     DescriptionMemo.text := 'None selected!';
@@ -671,7 +671,7 @@ end;
 procedure TForm1.ResultGridKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
   UpdateSelectedEmoji;
-  UpdateSelectionDisplay
+  UpdateSelectionDescription
 end;
 
 procedure TForm1.ResultGridMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
@@ -687,22 +687,32 @@ begin
   end;
 
   ResultGrid.SetFocus;
+  UpdateSelectedEmoji;
 
-  if button = mbLeft then begin
-    UpdateSelectedEmoji;
-    UpdateSelectionDisplay;
-  end;
+  if button = mbLeft then
+    UpdateSelectionDescription;
 
   if button = mbRight then begin
     if selectedEmoji <> nil then begin
-      if IsInFavourites(selectedEmoji.Codepoints) then
-        RemoveFavourite(selectedEmoji.Codepoints)
-      else
-        AddFavourite(selectedEmoji.Codepoints);
+      if fActualViewMode = ViewModeAll then begin
+        if IsInFavourites(selectedEmoji.Codepoints) then
+          RemoveFavourite(selectedEmoji.Codepoints)
+        else
+          AddFavourite(selectedEmoji.Codepoints);
 
-      UpdateSelectionDisplay;
-      ResultGrid.InvalidateCell(col, row);
-      SaveFavourites
+        UpdateSelectionDescription;
+        ResultGrid.InvalidateCell(col, row);
+
+        SaveFavourites
+      end;
+
+      if fActualViewMode = ViewModeFavourites then begin
+        if IsInFavourites(selectedEmoji.Codepoints) then
+          RemoveFavourite(selectedEmoji.Codepoints);
+
+        ShowFavouritedEmojis;
+        SaveFavourites
+      end;
     end;
   end;
 
