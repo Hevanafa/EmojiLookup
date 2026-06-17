@@ -306,12 +306,16 @@ begin
 
   idx := ResultGrid.Row * ResultGrid.ColCount + ResultGrid.Col;
 
-  if idx >= lastEmojiSearchResult.Count then begin
-    selectedEmoji := nil;
-    exit
-  end;
+  if GetSearchTerm = '' then
+    selectedEmoji := emojiList[idx]
+  else begin
+    if idx >= lastEmojiSearchResult.Count then begin
+      selectedEmoji := nil;
+      exit
+    end;
 
-  selectedEmoji := lastEmojiSearchResult[idx]
+    selectedEmoji := lastEmojiSearchResult[idx]
+  end;
 end;
 
 procedure TForm1.LoadEmojis;
