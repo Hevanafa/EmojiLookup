@@ -725,39 +725,40 @@ begin
   end;
 end;
 
-{ TODO: Remove this, since this is the setup before default drawing }
 procedure TForm1.ResultGridPrepareCanvas(Sender: TObject; aCol, aRow: Integer; aState: TGridDrawState);
-var
-  cell: string;
-  idx: word;
-  favitem: TFavourite;
 begin
-  if fActualViewMode = ViewModeAll then begin
-    idx := arow * ResultGrid.ColCount + acol;
-
-    if (idx < lastEmojiSearchResult.Count)
-      and IsInFavourites(lastEmojiSearchResult[idx].Codepoints) then
-      ResultGrid.canvas.Brush.Color := clMoneyGreen;
-  end;
 end;
 
 procedure TForm1.ResultGridDrawCell(Sender: TObject; aCol, aRow: Integer; aRect: TRect; aState: TGridDrawState);
+var
+  idx: word;
 begin
+  brush.color := clWhite;
+  brush.style := bsSolid;
+
+  idx := arow * ResultGrid.ColCount + acol;
+
+  if idx >= lastEmojiSearchResult.count then
+    brush.color := clBlack;
+
+  if fActualViewMode = ViewModeAll then begin
+    if (idx < lastEmojiSearchResult.Count)
+        and IsInFavourites(lastEmojiSearchResult[idx].Codepoints) then
+        ResultGrid.Canvas.Brush.Color := clMoneyGreen;
+  end;
+
   if gdSelected in astate then begin
-    with ResultGrid.canvas do begin
-      { Background }
-      brush.color := CellBackground;
-      brush.Style := bsSolid;
+    { Background }
+    ResultGrid.canvas.brush.color := CellBackground;
 
-      { Cell border
-        FocusRectVisible must be set to false }
-      pen.color := clBlack;
+    { Cell border
+      FocusRectVisible must be set to false }
+    ResultGrid.canvas.pen.color := clBlack;
+  end;
 
-      Rectangle(arect.Left, aRect.Top, arect.Right - 1, aRect.Bottom - 1);
-      TextOut(arect.Left + 3, arect.top + 3, ResultGrid.Cells[acol, arow]);
-    end;
-  end
+  ResultGrid.canvas.Rectangle(arect.Left, aRect.Top, arect.Right - 1, aRect.Bottom - 1);
 
+  ResultGrid.canvas.TextOut(arect.Left + 3, arect.top + 3, ResultGrid.Cells[acol, arow]);
   { TODO: Draw a star on the favourited emoji }
 end;
 
