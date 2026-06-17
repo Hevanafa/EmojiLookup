@@ -91,6 +91,7 @@ type
 
     const favouritesFile = 'favourites.txt';
 
+    function GetSearchTerm: string;
     procedure LoadEmojis;
     procedure UpdateSelectedEmoji;
     procedure UpdateSelectionDisplay;
@@ -205,15 +206,13 @@ end;
 
 procedure TForm1.SearchEditChange(Sender: TObject);
 var
-  searchTerm: string;
   emoji: temoji;
   col, row: word;
   startTick, endTick: TDateTime;
 begin
   if emojiList = nil then exit;
 
-  searchTerm := lowercase(trim(SearchEdit.Text));
-  if searchTerm = '' then begin
+  if GetSearchTerm = '' then begin
     ResultGrid.clear;
     DescriptionMemo.text := format(
       'Loaded %d emojis' + LineEnding + 'Enter a few words to search', [
@@ -228,7 +227,7 @@ begin
   lastEmojiSearchResult.clear;
 
   for emoji in emojiList do
-    if emoji.LowerCaseDescriptor.contains(searchTerm) then
+    if emoji.LowerCaseDescriptor.contains(GetSearchTerm) then
       lastEmojiSearchResult.Add(emoji);
 
   ResultGrid.clear;
@@ -402,6 +401,12 @@ begin
   closefile(f);
 
   LoadFavourites := true
+end;
+
+
+function TForm1.GetSearchTerm: string;
+begin
+  GetSearchTerm := trim(lowercase(SearchEdit.Text))
 end;
 
 function TForm1.IsInFavourites(const codepoints: string): boolean;
