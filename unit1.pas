@@ -95,6 +95,7 @@ type
 
     function GetSearchTerm: string;
     procedure LoadEmojis;
+    procedure ShowAllEmojis;
     procedure UpdateSelectedEmoji;
     procedure UpdateSelectionDisplay;
 
@@ -206,6 +207,34 @@ end;
 
 { TForm1 }
 
+procedure TForm1.ShowAllEmojis;
+var
+  e: TEmoji;
+  row, col: word;
+begin
+  if emojiList = nil then exit;
+
+  ResultGrid.Clear;
+
+  ResultGrid.RowCount := ceil(emojiList.Count / 8);
+  row := 0;  col := 0;
+
+  for e in emojiList do begin
+    ResultGrid.Cells[col, row] := e.Emoji;
+
+    inc(col);
+    if col >= ResultGrid.ColCount then begin
+      inc(row);
+      col := 0;
+    end;
+  end;
+
+  DescriptionMemo.text := format(
+    'Loaded %d emojis' + LineEnding + 'Enter a few words to search', [
+      emojiList.count
+    ]);
+end;
+
 procedure TForm1.SearchEditChange(Sender: TObject);
 var
   localSearchTerm: string;
@@ -220,13 +249,8 @@ begin
   localSearchTerm := GetSearchTerm;
 
   if localSearchTerm = '' then begin
-    ResultGrid.clear;
-    DescriptionMemo.text := format(
-      'Loaded %d emojis' + LineEnding + 'Enter a few words to search', [
-        emojiList.count
-      ]);
-
-    exit;
+    ShowAllEmojis;
+    exit
   end;
 
   startTick := now;
@@ -473,15 +497,6 @@ end;
 
 procedure TForm1.FormShow(Sender: TObject);
 begin
-  SearchEdit.clear;
-  DescriptionMemo.clear;
-  ResultGrid.Clear;
-
-  lastSearchTerm := '';
-
-  lastEmojiSearchResult := TEmojiList.Create(false);
-  EmojiBufferEdit.clear;
-
   LoadEmojis;
   LoadFavourites;
 
@@ -492,6 +507,16 @@ begin
 
   if favouriteList.Count > 0 then
     DescriptionMemo.Append(format('Loaded %d favourites', [favouriteList.count]));
+
+  SearchEdit.clear;
+  ResultGrid.Clear;
+
+  lastSearchTerm := '';
+
+  lastEmojiSearchResult := TEmojiList.Create(false);
+  EmojiBufferEdit.clear;
+
+  { ShowAllEmojis; }
 end;
 
 procedure TForm1.FormClose(Sender: TObject; var CloseAction: TCloseAction);
