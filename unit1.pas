@@ -303,10 +303,16 @@ begin
   if GetSearchTerm = lastSearchTerm then exit;
 
   lastSearchTerm := GetSearchTerm;
-  localSearchTerm := GetSearchTerm;
+  localSearchTerm := lastSearchTerm;
 
   if localSearchTerm = '' then begin
-    ShowAllEmojis;
+    case fActualViewMode of
+      ViewModeAll:
+        ShowAllEmojis;
+      ViewModeFavourites:
+        ShowFavouritedEmojis;
+    end;
+
     exit
   end;
 
