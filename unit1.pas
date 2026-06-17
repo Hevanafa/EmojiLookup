@@ -731,47 +731,57 @@ end;
 
 procedure TForm1.ResultGridDrawCell(Sender: TObject; aCol, aRow: Integer; aRect: TRect; aState: TGridDrawState);
 var
-  idx: word;
+  idx: longint;
+  favourite: boolean;
 begin
-  brush.color := clWhite;
-  brush.style := bsSolid;
+  { ResultGrid.DefaultDrawCell(acol, arow, rect, state); }
+
+  favourite := false;
+
+  ResultGrid.Canvas.Brush.color := clWhite;
+  ResultGrid.Canvas.Brush.style := bsSolid;
 
   idx := arow * ResultGrid.ColCount + acol;
 
   if idx >= lastEmojiSearchResult.count then
-    brush.color := clBlack;
+    ResultGrid.Canvas.Brush.color := clBlack;
 
   if fActualViewMode = ViewModeAll then begin
-    if (idx < lastEmojiSearchResult.Count)
-        and IsInFavourites(lastEmojiSearchResult[idx].Codepoints) then
-        ResultGrid.Canvas.Brush.Color := clMoneyGreen;
+    if GetSearchTerm = '' then begin
+      if (idx < emojiList.count)
+          and IsInFavourites(emojiList[idx].Codepoints) then
+        favourite := true;
+
+    end else
+      if (idx < lastEmojiSearchResult.count)
+          and IsInFavourites(lastEmojiSearchResult[idx].Codepoints) then
+        favourite := true;
   end;
+
+  if favourite then
+    ResultGrid.Canvas.Brush.Color := clMoneyGreen
+  else
+    ResultGrid.Canvas.Brush.Color := clWhite;
 
   if gdSelected in astate then begin
     { Background }
-    ResultGrid.canvas.brush.color := CellBackground;
+    ResultGrid.Canvas.Brush.color := CellBackground;
 
     { Cell border
       FocusRectVisible must be set to false }
     ResultGrid.canvas.pen.color := clBlack;
   end;
 
+  { This draws both the background and the cell border provided by the Pen property }
   ResultGrid.canvas.Rectangle(arect.Left, aRect.Top, arect.Right - 1, aRect.Bottom - 1);
+
+  ResultGrid.Canvas.Font.Color := clRed;
 
   ResultGrid.canvas.TextOut(arect.Left + 3, arect.top + 3, ResultGrid.Cells[acol, arow]);
 
-  { Draw a star on the favourited emoji }
-  if fActualViewMode = ViewModeAll then begin
-    if GetSearchTerm = '' then begin
-      if (idx < emojiList.count)
-          and IsInFavourites(emojiList[idx].Codepoints) then
-        ResultGrid.Canvas.TextOut(aRect.Right - 10, arect.Top, '*');
-
-    end else
-      if (idx < lastEmojiSearchResult.count)
-          and IsInFavourites(lastEmojiSearchResult[idx].Codepoints) then
-        ResultGrid.Canvas.TextOut(aRect.Right - 10, arect.Top, '*');
-  end;
+  { Draw a star }
+  if favourite then
+    ResultGrid.Canvas.TextOut(aRect.Right - 10, arect.Top, '*');
 end;
 
 
