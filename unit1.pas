@@ -117,6 +117,7 @@ type
     procedure ShowFavouritedEmojis;
 
     procedure UpdateSelectedEmoji;
+    { This proceedure depends on UpdateSelectedEmoji }
     procedure UpdateSelectionDisplay;
 
     function IsInFavourites(const codepoints: string): boolean;
@@ -429,13 +430,8 @@ end;
 
 procedure TForm1.UpdateSelectionDisplay;
 begin
-  if ResultGrid.SelectedRangeCount = 0 then begin
-    DescriptionMemo.text := 'None selected!';
-    exit
-  end;
-
   if selectedEmoji = nil then begin
-    DescriptionMemo.clear;
+    DescriptionMemo.text := 'None selected!';
     exit
   end;
 
