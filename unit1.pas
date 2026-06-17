@@ -104,6 +104,9 @@ type
       DefaultColCount = 8;
 
     procedure AppendToResult(const content: string);
+    { Returns the column number of the last row, otherwise -1 if all cells of the row are occupied }
+    function FindEmptyLastCell: smallint;
+
     function GetSearchTerm: string;
     procedure LoadEmojis;
 
@@ -220,6 +223,23 @@ end;
 
 
 { TForm1 }
+
+function TForm1.FindEmptyLastCell: smallint;
+var
+  col: smallint;
+begin
+  FindEmptyLastCell := -1;
+
+  if ResultGrid.RowCount = 0 then exit;
+  if ResultGrid.ColCount = 0 then exit;
+
+  for col:=0 to ResultGrid.ColCount - 1 do
+    if ResultGrid.cells[col, ResultGrid.RowCount - 1] = '' then begin
+      FindEmptyLastCell := col;
+      exit
+    end;
+end;
+
 procedure TForm1.AppendToResult(const content: string);
 var
   row, col: smallint;
@@ -577,7 +597,7 @@ begin
 
   DescriptionMemo.text := format('colcount: %d', [ResultGrid.ColCount]);
 
-  { ShowAllEmojis }
+  ShowAllEmojis
 end;
 
 procedure TForm1.FormClose(Sender: TObject; var CloseAction: TCloseAction);
