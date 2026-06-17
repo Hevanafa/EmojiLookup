@@ -589,11 +589,9 @@ begin
     DescriptionMemo.Append(format('Loaded %d favourites', [favouriteList.count]));
 
   SearchEdit.clear;
-
   ClearGrid;
 
-  fActualViewMode := ViewModeAll;
-  lastSearchTerm := '';
+  SetActualViewMode(ViewModeAll);
 
   lastEmojiSearchResult := TEmojiList.Create(false);
   EmojiBufferEdit.clear;
@@ -629,12 +627,12 @@ begin
   MessageBox(0, 'Copied to clipboard!', 'Copy Emoji', MB_OK)
 end;
 
-procedure TForm1.FavouritesRadioChange(Sender: TObject);
+procedure TForm1.AllRadioChange(Sender: TObject);
 begin
   SetActualViewMode(ViewModeAll)
 end;
 
-procedure TForm1.AllRadioChange(Sender: TObject);
+procedure TForm1.FavouritesRadioChange(Sender: TObject);
 begin
   SetActualViewMode(ViewModeFavourites)
 end;
