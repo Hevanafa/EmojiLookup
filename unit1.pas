@@ -735,53 +735,52 @@ var
   favourite: boolean;
 begin
   { ResultGrid.DefaultDrawCell(acol, arow, rect, state); }
-
+  idx := arow * ResultGrid.ColCount + acol;
   favourite := false;
 
-  ResultGrid.Canvas.Brush.color := clWhite;
-  ResultGrid.Canvas.Brush.style := bsSolid;
+  with ResultGrid.Canvas do begin
+    Brush.color := clWhite;
+    Brush.style := bsSolid;
 
-  idx := arow * ResultGrid.ColCount + acol;
+    if idx >= lastEmojiSearchResult.count then
+      Brush.color := clBlack;
 
-  if idx >= lastEmojiSearchResult.count then
-    ResultGrid.Canvas.Brush.color := clBlack;
+    if fActualViewMode = ViewModeAll then begin
+      if GetSearchTerm = '' then begin
+        if (idx < emojiList.count)
+            and IsInFavourites(emojiList[idx].Codepoints) then
+          favourite := true;
 
-  if fActualViewMode = ViewModeAll then begin
-    if GetSearchTerm = '' then begin
-      if (idx < emojiList.count)
-          and IsInFavourites(emojiList[idx].Codepoints) then
-        favourite := true;
+      end else
+        if (idx < lastEmojiSearchResult.count)
+            and IsInFavourites(lastEmojiSearchResult[idx].Codepoints) then
+          favourite := true;
+    end;
 
-    end else
-      if (idx < lastEmojiSearchResult.count)
-          and IsInFavourites(lastEmojiSearchResult[idx].Codepoints) then
-        favourite := true;
+    if favourite then
+      Brush.Color := clMoneyGreen
+    else
+      Brush.Color := clWhite;
+
+    if gdSelected in astate then begin
+      { Background }
+      Brush.color := CellBackground;
+
+      { Cell border
+        FocusRectVisible must be set to false }
+      pen.color := clBlack;
+    end;
+
+    { This draws both the background (Brush property) and the cell border (Pen property) }
+    Rectangle(arect.Left, aRect.Top, arect.Right - 1, aRect.Bottom - 1);
+
+    { Font.Color := clRed; }
+    TextOut(arect.Left + 3, arect.top + 3, ResultGrid.Cells[acol, arow]);
+
+    { Draw a star }
+    if favourite then
+      TextOut(aRect.Right - 10, arect.Top, '*');
   end;
-
-  if favourite then
-    ResultGrid.Canvas.Brush.Color := clMoneyGreen
-  else
-    ResultGrid.Canvas.Brush.Color := clWhite;
-
-  if gdSelected in astate then begin
-    { Background }
-    ResultGrid.Canvas.Brush.color := CellBackground;
-
-    { Cell border
-      FocusRectVisible must be set to false }
-    ResultGrid.canvas.pen.color := clBlack;
-  end;
-
-  { This draws both the background and the cell border provided by the Pen property }
-  ResultGrid.canvas.Rectangle(arect.Left, aRect.Top, arect.Right - 1, aRect.Bottom - 1);
-
-  ResultGrid.Canvas.Font.Color := clRed;
-
-  ResultGrid.canvas.TextOut(arect.Left + 3, arect.top + 3, ResultGrid.Cells[acol, arow]);
-
-  { Draw a star }
-  if favourite then
-    ResultGrid.Canvas.TextOut(aRect.Right - 10, arect.Top, '*');
 end;
 
 
