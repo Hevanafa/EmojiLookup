@@ -529,7 +529,7 @@ begin
   lastEmojiSearchResult := TEmojiList.Create(false);
   EmojiBufferEdit.clear;
 
-  { ShowAllEmojis; }
+  ShowAllEmojis
 end;
 
 procedure TForm1.FormClose(Sender: TObject; var CloseAction: TCloseAction);

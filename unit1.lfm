@@ -2,10 +2,10 @@ object Form1: TForm1
   Left = 200
   Height = 388
   Top = 100
-  Width = 480
+  Width = 360
   Caption = 'Emoji Lookup'
   ClientHeight = 388
-  ClientWidth = 480
+  ClientWidth = 360
   LCLVersion = '4.6.0.0'
   OnClose = FormClose
   OnShow = FormShow
@@ -13,7 +13,7 @@ object Form1: TForm1
     Left = 4
     Height = 23
     Top = 4
-    Width = 468
+    Width = 350
     Anchors = [akTop, akLeft, akRight]
     TabOrder = 0
     Text = 'SearchEdit'
@@ -24,7 +24,7 @@ object Form1: TForm1
     Left = 4
     Height = 64
     Top = 296
-    Width = 470
+    Width = 350
     Anchors = [akLeft, akRight, akBottom]
     Lines.Strings = (
       'DescriptionMemo'
@@ -38,7 +38,7 @@ object Form1: TForm1
     Left = 4
     Height = 195
     Top = 61
-    Width = 468
+    Width = 350
     Anchors = [akTop, akLeft, akRight, akBottom]
     AutoEdit = False
     ColCount = 8
@@ -72,13 +72,13 @@ object Form1: TForm1
     Left = 88
     Height = 23
     Top = 264
-    Width = 304
+    Width = 184
     Anchors = [akLeft, akRight, akBottom]
     TabOrder = 3
     Text = 'EmojiBufferEdit'
   end
   object CopyButton: TButton
-    Left = 397
+    Left = 277
     Height = 25
     Top = 264
     Width = 75
@@ -91,7 +91,7 @@ object Form1: TForm1
     Left = 0
     Height = 23
     Top = 365
-    Width = 480
+    Width = 360
     Panels = <    
       item
         Alignment = taRightJustify
