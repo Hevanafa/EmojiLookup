@@ -759,7 +759,19 @@ begin
   ResultGrid.canvas.Rectangle(arect.Left, aRect.Top, arect.Right - 1, aRect.Bottom - 1);
 
   ResultGrid.canvas.TextOut(arect.Left + 3, arect.top + 3, ResultGrid.Cells[acol, arow]);
-  { TODO: Draw a star on the favourited emoji }
+
+  { Draw a star on the favourited emoji }
+  if fActualViewMode = ViewModeAll then begin
+    if GetSearchTerm = '' then begin
+      if (idx < emojiList.count)
+          and IsInFavourites(emojiList[idx].Codepoints) then
+        ResultGrid.Canvas.TextOut(aRect.Right - 10, arect.Top, '*');
+
+    end else
+      if (idx < lastEmojiSearchResult.count)
+          and IsInFavourites(lastEmojiSearchResult[idx].Codepoints) then
+        ResultGrid.Canvas.TextOut(aRect.Right - 10, arect.Top, '*');
+  end;
 end;
 
 
