@@ -12,10 +12,8 @@ An app to look up emojis, written in Free Pascal (Lazarus)
 
 ## Emoji Data
 
-This application uses emoji data derived from the Unicode Consortium's
-`emoji-test.txt` file.
+This application includes Unicode emoji data
+from the Unicode Consortium's `emoji-test.txt` file.
 
-Unicode data © Unicode, Inc.
-Used under the Unicode License.
-
-https://www.unicode.org/license.html
+Unicode data is © Unicode, Inc.
+See `LICENSE-Unicode.txt` for details.
