@@ -108,7 +108,7 @@ type
       FavouritesFile = 'favourites.txt';
       DefaultColCount = 8;
 
-      CornflowerBlue = TColor($ED9564);
+      { CornflowerBlue = TColor($ED9564); }
       CellBackground = TColor($F9DAC9);
 
     procedure AppendToResult(const content: string);
@@ -166,7 +166,6 @@ constructor TEmoji.New(const rawCodepoints: string; const aDescriptor: string);
 var
   chunks: TStringArray;
   a: word;
-  s: string;
 begin
   fCodepoints := rawCodepoints;
 
@@ -411,7 +410,6 @@ var
   parts: TStringArray;
   pair: TStringArray;
 
-  emoji: TEmoji;
   startTick, endTick: TDateTime;
 begin
   emojiList := TEmojiList.create;
@@ -483,13 +481,6 @@ var
   line: string;
   pair: TStringArray;
   rawCodepoints: string;
-
-  chunks: TStringArray;
-  hex: string;
-  emojiStr: string;
-
-  emoji: TEmoji;
-
 begin
   favouriteList := TFavouriteList.create;
 
@@ -553,8 +544,6 @@ begin
 end;
 
 procedure TForm1.AddFavourite(const codepoints: string);
-var
-  favitem: TFavourite;
 begin
   if IsInFavourites(codepoints) then exit;
 

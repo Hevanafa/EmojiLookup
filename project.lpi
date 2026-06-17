@@ -21,7 +21,7 @@
       <MinorVersionNr Value="1"/>
       <RevisionNr Value="1"/>
       <Language Value="0809"/>
-      <StringTable Comments="An app to look up emojis" CompanyName="Hevanafa" FileDescription="An app to look up emojis" InternalName="EmojiLookup" LegalCopyright="(c) Hevanafa 2026" OriginalFilename="EmojiLookup" ProductName="EmojiLookup" ProductVersion="0.1.1"/>
+      <StringTable Comments="An app to look up and copy emojis" CompanyName="Hevanafa" FileDescription="An app to look up and copy emojis" InternalName="EmojiLookup" LegalCopyright="(c) Hevanafa 2026" OriginalFilename="EmojiLookup" ProductName="EmojiLookup" ProductVersion="0.1.1"/>
     </VersionInfo>
     <BuildModes>
       <Item Name="Debug" Default="True"/>
