@@ -103,7 +103,10 @@ type
 
     function GetSearchTerm: string;
     procedure LoadEmojis;
+
     procedure ShowAllEmojis;
+    procedure ShowFavouritedEmojis;
+
     procedure UpdateSelectedEmoji;
     procedure UpdateSelectionDisplay;
 
@@ -224,7 +227,7 @@ begin
 
   ResultGrid.Clear;
 
-  ResultGrid.RowCount := ceil(emojiList.Count / 8);
+  ResultGrid.RowCount := ceil(emojiList.Count / ResultGrid.ColCount);
   row := 0;  col := 0;
 
   for e in emojiList do begin
@@ -241,6 +244,18 @@ begin
     'Loaded %d emojis' + LineEnding + 'Enter a few words to search', [
       emojiList.count
     ]);
+end;
+
+procedure TForm1.ShowFavouritedEmojis;
+var
+  favitem: TFavourite;
+begin
+  ResultGrid.Clear;
+
+  ResultGrid.RowCount := ceil(favouriteList.Count / ResultGrid.ColCount);
+
+  { TODO: for favitem in favouriteList do }
+
 end;
 
 procedure TForm1.SearchEditChange(Sender: TObject);
@@ -560,11 +575,15 @@ end;
 
 procedure TForm1.FavouritesRadioChange(Sender: TObject);
 begin
-  SearchEdit.Clear
+  lastSearchTerm := '';
+  SearchEdit.Clear;
+
+  ShowFavouritedEmojis
 end;
 
 procedure TForm1.AllRadioChange(Sender: TObject);
 begin
+  lastSearchTerm := '';
   SearchEdit.Clear
 end;
 
