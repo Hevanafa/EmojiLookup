@@ -377,13 +377,13 @@ begin
   end;
 
   if fActualViewMode = ViewModeFavourites then begin
-    if GetSearchTerm = '' then
+    if GetSearchTerm = '' then begin
       if idx < favouriteList.Count then
         selectedEmoji := FindEmojiByCodepoints(favouriteList[idx].Codepoints)
       else
         selectedEmoji := nil;
-    else begin
-      { Thee same as ViewModeAll }
+    end else begin
+      { The same as ViewModeAll }
       if idx >= lastEmojiSearchResult.Count then begin
         selectedEmoji := nil;
         exit
@@ -714,11 +714,13 @@ var
   idx: word;
   favitem: TFavourite;
 begin
-  idx := arow * ResultGrid.ColCount + acol;
+  if fActualViewMode = ViewModeAll then begin
+    idx := arow * ResultGrid.ColCount + acol;
 
-  if (idx < lastEmojiSearchResult.Count)
-    and IsInFavourites(lastEmojiSearchResult[idx].Codepoints) then
-    ResultGrid.canvas.Brush.Color := clMoneyGreen;
+    if (idx < lastEmojiSearchResult.Count)
+      and IsInFavourites(lastEmojiSearchResult[idx].Codepoints) then
+      ResultGrid.canvas.Brush.Color := clMoneyGreen;
+  end;
 end;
 
 end.
