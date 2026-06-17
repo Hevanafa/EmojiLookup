@@ -378,7 +378,10 @@ begin
 
   if fActualViewMode = ViewModeFavourites then begin
     if GetSearchTerm = '' then
-      selectedEmoji := FindEmojiByCodepoints(favouriteList[idx].Codepoints)
+      if idx < favouriteList.Count then
+        selectedEmoji := FindEmojiByCodepoints(favouriteList[idx].Codepoints)
+      else
+        selectedEmoji := nil;
     else begin
       { Thee same as ViewModeAll }
       if idx >= lastEmojiSearchResult.Count then begin
