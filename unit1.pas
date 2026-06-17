@@ -103,7 +103,9 @@ type
     const
       FavouritesFile = 'favourites.txt';
       DefaultColCount = 8;
+
       CornflowerBlue = TColor($ED9564);
+      CellBackground = TColor($F9DAC9);
 
     procedure AppendToResult(const content: string);
     procedure ClearGrid;
@@ -739,10 +741,13 @@ procedure TForm1.ResultGridDrawCell(Sender: TObject; aCol, aRow: Integer; aRect:
 begin
   if gdSelected in astate then begin
     with ResultGrid.canvas do begin
-      brush.color := CornflowerBlue;
+      { Background }
+      brush.color := CellBackground;
       brush.Style := bsSolid;
 
-      pen.color := clred;
+      { Cell border
+        FocusRectVisible must be set to false }
+      pen.color := clBlack;
 
       Rectangle(arect.Left, aRect.Top, arect.Right - 1, aRect.Bottom - 1);
       TextOut(arect.Left + 3, arect.top + 3, ResultGrid.Cells[acol, arow]);
