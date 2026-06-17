@@ -85,7 +85,7 @@ type
     procedure SearchEditChange(Sender: TObject);
 
   private
-    actualViewMode: TEmojiViewModes;
+    fActualViewMode, lastViewMode: TEmojiViewModes;
 
     { in seconds, assigned in LoadEmojis }
     loadingTime: double;
@@ -110,6 +110,8 @@ type
 
     function GetSearchTerm: string;
     procedure LoadEmojis;
+
+    procedure SetActualViewMode(value: TEmojiViewModes);
 
     procedure ShowAllEmojis;
     procedure ShowFavouritedEmojis;
@@ -590,7 +592,7 @@ begin
 
   ClearGrid;
 
-  actualViewMode := ViewModeAll;
+  fActualViewMode := ViewModeAll;
   lastSearchTerm := '';
 
   lastEmojiSearchResult := TEmojiList.Create(false);
@@ -629,16 +631,32 @@ end;
 
 procedure TForm1.FavouritesRadioChange(Sender: TObject);
 begin
-  lastSearchTerm := '';
-  SearchEdit.Clear;
-
-  ShowFavouritedEmojis
+  SetActualViewMode(ViewModeAll)
 end;
 
 procedure TForm1.AllRadioChange(Sender: TObject);
 begin
-  lastSearchTerm := '';
-  SearchEdit.Clear
+  SetActualViewMode(ViewModeFavourites)
+end;
+
+procedure TForm1.SetActualViewMode(value: TEmojiViewModes);
+begin
+  fActualViewMode := value;
+
+  if lastViewMode <> fActualViewMode then begin
+    lastViewMode := fActualViewMode;
+
+    lastSearchTerm := '';
+    SearchEdit.Clear;
+    ClearGrid;
+
+    case fActualViewMode of
+      ViewModeAll:
+        ShowAllEmojis;
+      ViewModeFavourites:
+        ShowFavouritedEmojis;
+    end;
+  end;
 end;
 
 procedure TForm1.ResultGridKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
