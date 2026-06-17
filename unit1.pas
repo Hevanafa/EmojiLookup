@@ -104,6 +104,7 @@ type
       DefaultColCount = 8;
 
     procedure AppendToResult(const content: string);
+    procedure ClearGrid;
     { Returns the column number of the last row, otherwise -1 if all cells of the row are occupied }
     function FindEmptyLastCell: smallint;
 
@@ -247,19 +248,12 @@ var
 begin
   foundEmpty := false;
 
-  for row:=0 to ResultGrid.RowCount - 1 do
-  for col:=0 to ResultGrid.ColCount - 1 do begin
-    if ResultGrid.Cells[col, row] = '' then begin
-      foundEmpty := true;
-      break
-    end;
-  end;
+  col := FindEmptyLastCell;
+  if col < 0 then
+    col := 0;
 
-  if not foundEmpty then begin
-    ResultGrid.RowCount := ResultGrid.RowCount + 1;
-    inc(row);
-    col := 0
-  end;
+  row := ResultGrid.RowCount;
+  ResultGrid.RowCount := ResultGrid.RowCount + 1;
 
   ResultGrid.cells[col, row] := content
 end;
@@ -271,7 +265,7 @@ var
 begin
   if emojiList = nil then exit;
 
-  ResultGrid.Clear;
+  ClearGrid;
 
   DescriptionMemo.Text := format('colcount: %d', [ResultGrid.ColCount]);
   Invalidate;
@@ -299,7 +293,7 @@ procedure TForm1.ShowFavouritedEmojis;
 var
   favitem: TFavourite;
 begin
-  ResultGrid.Clear;
+  ClearGrid;
 
   { ResultGrid.RowCount := ceil(favouriteList.Count / ResultGrid.ColCount); }
 
@@ -333,7 +327,7 @@ begin
     if emoji.LowerCaseDescriptor.contains(localSearchTerm) then
       lastEmojiSearchResult.Add(emoji);
 
-  ResultGrid.clear;
+  ClearGrid;
   ResultGrid.RowCount := ceil(lastEmojiSearchResult.Count / 8);
 
   col := 0;  row := 0;
@@ -510,6 +504,14 @@ begin
   LoadFavourites := true
 end;
 
+procedure TForm1.ClearGrid;
+begin
+  { TStringGrid.Clear also clears ColCount }
+  ResultGrid.Clear;
+
+  ResultGrid.ColCount := DefaultColCount;
+  ResultGrid.RowCount := 0
+end;
 
 function TForm1.GetSearchTerm: string;
 begin
@@ -586,8 +588,7 @@ begin
 
   SearchEdit.clear;
 
-  ResultGrid.clear;
-  ResultGrid.ColCount := DefaultColCount;
+  ClearGrid;
 
   actualViewMode := ViewModeAll;
   lastSearchTerm := '';
