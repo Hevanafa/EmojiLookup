@@ -2,7 +2,13 @@
 
 ![preview](./preview.png)
 
-An app to look up emojis, written in Free Pascal (Lazarus)
+An app to look up and copying emojis, written in Free Pascal (Lazarus)
+
+## Running
+
+Run `EmojiLookup.exe`
+
+No installation needed
 
 ## Building
 
@@ -16,4 +22,4 @@ This application includes Unicode emoji data
 from the Unicode Consortium's `emoji-test.txt` file.
 
 Unicode data is © Unicode, Inc.
-See `LICENSE-Unicode.txt` for details.
+See `LICENSE-Unicode.txt` for the Unicode Terms of Use.
