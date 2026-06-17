@@ -79,10 +79,14 @@ type
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
 
     procedure ResultGridDblClick(Sender: TObject);
-    procedure ResultGridDrawCell(Sender: TObject; aCol, aRow: Integer; aRect: TRect; aState: TGridDrawState);
     procedure ResultGridKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure ResultGridMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+
+    { "Before Lazarus draws this cell, use these colours / fonts" }
     procedure ResultGridPrepareCanvas(Sender: TObject; aCol, aRow: Integer; aState: TGridDrawState);
+    { "Move aside, Lazarus. I'll draw this cell myself" }
+    procedure ResultGridDrawCell(Sender: TObject; aCol, aRow: Integer; aRect: TRect; aState: TGridDrawState);
+
     procedure SearchEditChange(Sender: TObject);
 
   private
@@ -719,9 +723,9 @@ begin
       end;
     end;
   end;
-
 end;
 
+{ TODO: Remove this, since this is the setup before default drawing }
 procedure TForm1.ResultGridPrepareCanvas(Sender: TObject; aCol, aRow: Integer; aState: TGridDrawState);
 var
   cell: string;
@@ -752,7 +756,9 @@ begin
       Rectangle(arect.Left, aRect.Top, arect.Right - 1, aRect.Bottom - 1);
       TextOut(arect.Left + 3, arect.top + 3, ResultGrid.Cells[acol, arow]);
     end;
-  end;
+  end
+
+  { TODO: Draw a star on the favourited emoji }
 end;
 
 
