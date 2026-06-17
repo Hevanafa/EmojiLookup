@@ -245,9 +245,11 @@ begin
 
   endTick := now;
 
-  DescriptionMemo.text := format('Found %d emojis in %.2f seconds', [
-    lastEmojiSearchResult.Count, (endTick - startTick) * SecsPerDay
-  ]);
+  DescriptionMemo.text := format(
+    'Found %d emojis in %.2f seconds' + LineEnding +
+    'Right click an emoji to save to favourites', [
+      lastEmojiSearchResult.Count, (endTick - startTick) * SecsPerDay
+    ]);
 end;
 
 procedure TForm1.UpdateSelectedEmoji;
