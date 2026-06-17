@@ -125,7 +125,7 @@ type
     procedure RemoveFavourite(const codepoints: string);
 
     { Returns an object reference to emojiList }
-    function FindByCodepoints(const codepoints: string): TEmoji;
+    function FindEmojiByCodepoints(const codepoints: string): TEmoji;
 
     procedure SaveFavourites;
     function LoadFavourites: boolean;
@@ -288,7 +288,7 @@ begin
   ClearGrid;
 
   for favitem in favouriteList do
-    AppendToResult(FindByCodepoints(favitem.Codepoints).Emoji);
+    AppendToResult(FindEmojiByCodepoints(favitem.Codepoints).Emoji);
 end;
 
 procedure TForm1.SearchEditChange(Sender: TObject);
@@ -343,15 +343,31 @@ begin
 
   idx := ResultGrid.Row * ResultGrid.ColCount + ResultGrid.Col;
 
-  if GetSearchTerm = '' then
-    selectedEmoji := emojiList[idx]
-  else begin
-    if idx >= lastEmojiSearchResult.Count then begin
-      selectedEmoji := nil;
-      exit
-    end;
+  if fActualViewMode = ViewModeAll then begin
+    if GetSearchTerm = '' then
+      selectedEmoji := emojiList[idx]
+    else begin
+      if idx >= lastEmojiSearchResult.Count then begin
+        selectedEmoji := nil;
+        exit
+      end;
 
-    selectedEmoji := lastEmojiSearchResult[idx]
+      selectedEmoji := lastEmojiSearchResult[idx]
+    end;
+  end;
+
+  if fActualViewMode = ViewModeFavourites then begin
+    if GetSearchTerm = '' then
+      selectedEmoji := FindEmojiByCodepoints(favouriteList[idx])
+    else begin
+      { Thee same as ViewModeAll }
+      if idx >= lastEmojiSearchResult.Count then begin
+        selectedEmoji := nil;
+        exit
+      end;
+
+      selectedEmoji := lastEmojiSearchResult[idx]
+    end;
   end;
 end;
 
@@ -529,17 +545,17 @@ begin
     end;
 end;
 
-function TForm1.FindByCodepoints(const codepoints: string): TEmoji;
+function TForm1.FindEmojiByCodepoints(const codepoints: string): TEmoji;
 var
   e: TEmoji;
 begin
-  FindByCodepoints := nil;
+  FindEmojiByCodepoints := nil;
 
   if emojiList = nil then exit;
 
   for e in emojiList do
     if e.Codepoints = codepoints then begin
-      FindByCodepoints := e;
+      FindEmojiByCodepoints := e;
       exit
     end;
 end;
