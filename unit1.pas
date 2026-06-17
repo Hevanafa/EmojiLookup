@@ -57,18 +57,24 @@ type
   TEmojiList = specialize TFPGObjectList<TEmoji>;
   TFavouriteList = specialize TFPGObjectList<TFavourite>;
 
+  TEmojiViewModes = (ViewModeAll, ViewModeFavourites);
+
   { TForm1 }
 
   TForm1 = class(TForm)
     CopyButton: TButton;
     EmojiBufferEdit: TEdit;
     Label1: TLabel;
+    AllRadio: TRadioButton;
+    FavouritesRadio: TRadioButton;
     SearchEdit: TEdit;
     DescriptionMemo: TMemo;
     ResultGrid: TStringGrid;
     StatusBar1: TStatusBar;
 
+    procedure AllRadioChange(Sender: TObject);
     procedure CopyButtonClick(Sender: TObject);
+    procedure FavouritesRadioChange(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
 
@@ -79,6 +85,8 @@ type
     procedure SearchEditChange(Sender: TObject);
 
   private
+    actualViewMode: TEmojiViewModes;
+
     { in seconds, assigned in LoadEmojis }
     loadingTime: double;
 
@@ -511,6 +519,7 @@ begin
   SearchEdit.clear;
   ResultGrid.Clear;
 
+  actualViewMode := ViewModeAll;
   lastSearchTerm := '';
 
   lastEmojiSearchResult := TEmojiList.Create(false);
@@ -543,6 +552,16 @@ begin
   Clipboard.AsText := EmojiBufferEdit.text;
 
   MessageBox(0, 'Copied to clipboard!', 'Copy Emoji', MB_OK)
+end;
+
+procedure TForm1.FavouritesRadioChange(Sender: TObject);
+begin
+  SearchEdit.Clear
+end;
+
+procedure TForm1.AllRadioChange(Sender: TObject);
+begin
+  SearchEdit.Clear
 end;
 
 procedure TForm1.ResultGridKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
