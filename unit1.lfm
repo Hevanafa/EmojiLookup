@@ -45,6 +45,8 @@ object Form1: TForm1
     DefaultColWidth = 40
     FixedCols = 0
     FixedRows = 0
+    FocusColor = clBlack
+    FocusRectVisible = False
     Font.CharSet = 4
     Font.Height = -21
     Font.Pitch = fpVariable
@@ -56,6 +58,7 @@ object Form1: TForm1
     TabAdvance = aaNone
     TabOrder = 2
     OnDblClick = ResultGridDblClick
+    OnDrawCell = ResultGridDrawCell
     OnKeyUp = ResultGridKeyUp
     OnMouseUp = ResultGridMouseUp
     OnPrepareCanvas = ResultGridPrepareCanvas

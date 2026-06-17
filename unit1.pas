@@ -12,7 +12,7 @@ uses
 
   { Lazarus GUI stuff }
   Forms, Controls, Graphics, Dialogs,
-  StdCtrls, Grids, ComCtrls;
+  StdCtrls, Grids, ComCtrls, Types;
 
 type
 
@@ -79,6 +79,7 @@ type
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
 
     procedure ResultGridDblClick(Sender: TObject);
+    procedure ResultGridDrawCell(Sender: TObject; aCol, aRow: Integer; aRect: TRect; aState: TGridDrawState);
     procedure ResultGridKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure ResultGridMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure ResultGridPrepareCanvas(Sender: TObject; aCol, aRow: Integer; aState: TGridDrawState);
@@ -102,6 +103,7 @@ type
     const
       FavouritesFile = 'favourites.txt';
       DefaultColCount = 8;
+      CornflowerBlue = TColor($ED9564);
 
     procedure AppendToResult(const content: string);
     procedure ClearGrid;
@@ -732,6 +734,22 @@ begin
       ResultGrid.canvas.Brush.Color := clMoneyGreen;
   end;
 end;
+
+procedure TForm1.ResultGridDrawCell(Sender: TObject; aCol, aRow: Integer; aRect: TRect; aState: TGridDrawState);
+begin
+  if gdSelected in astate then begin
+    with ResultGrid.canvas do begin
+      brush.color := CornflowerBlue;
+      brush.Style := bsSolid;
+
+      pen.color := clred;
+
+      Rectangle(arect.Left, aRect.Top, arect.Right - 1, aRect.Bottom - 1);
+      TextOut(arect.Left + 3, arect.top + 3, ResultGrid.Cells[acol, arow]);
+    end;
+  end;
+end;
+
 
 end.
 
