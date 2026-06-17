@@ -434,8 +434,6 @@ begin
     exit
   end;
 
-  UpdateSelectedEmoji;
-
   if selectedEmoji = nil then begin
     DescriptionMemo.clear;
     exit
@@ -659,6 +657,7 @@ end;
 
 procedure TForm1.ResultGridKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
+  UpdateSelectedEmoji;
   UpdateSelectionDisplay
 end;
 
@@ -676,8 +675,10 @@ begin
 
   ResultGrid.SetFocus;
 
-  if button = mbLeft then
+  if button = mbLeft then begin
+    UpdateSelectedEmoji;
     UpdateSelectionDisplay;
+  end;
 
   if button = mbRight then begin
     if selectedEmoji <> nil then begin
