@@ -85,7 +85,7 @@ type
     { "Before Lazarus draws this cell, use these colours / fonts" }
     procedure ResultGridPrepareCanvas(Sender: TObject; aCol, aRow: Integer; aState: TGridDrawState);
     { "Move aside, Lazarus. I'll draw this cell myself" }
-    procedure ResultGridDrawCell(Sender: TObject; aCol, aRow: Integer; aRect: TRect; aState: TGridDrawState);
+    procedure ResultGridDrawCell(Sender: TObject; col, row: Integer; bounds: TRect; cellState: TGridDrawState);
 
     procedure SearchEditChange(Sender: TObject);
 
@@ -729,13 +729,13 @@ procedure TForm1.ResultGridPrepareCanvas(Sender: TObject; aCol, aRow: Integer; a
 begin
 end;
 
-procedure TForm1.ResultGridDrawCell(Sender: TObject; aCol, aRow: Integer; aRect: TRect; aState: TGridDrawState);
+procedure TForm1.ResultGridDrawCell(Sender: TObject; col, row: Integer; bounds: TRect; cellState: TGridDrawState);
 var
   idx: longint;
   favourite: boolean;
 begin
-  { ResultGrid.DefaultDrawCell(acol, arow, rect, state); }
-  idx := arow * ResultGrid.ColCount + acol;
+  { ResultGrid.DefaultDrawCell(col, row, rect, state); }
+  idx := row * ResultGrid.ColCount + col;
   favourite := false;
 
   with ResultGrid.Canvas do begin
@@ -762,7 +762,7 @@ begin
     else
       Brush.Color := clWhite;
 
-    if gdSelected in astate then begin
+    if gdSelected in cellState then begin
       { Background }
       Brush.color := CellBackground;
 
@@ -772,14 +772,14 @@ begin
     end;
 
     { This draws both the background (Brush property) and the cell border (Pen property) }
-    Rectangle(arect.Left, aRect.Top, arect.Right - 1, aRect.Bottom - 1);
+    Rectangle(bounds.Left, bounds.Top, bounds.Right - 1, bounds.Bottom - 1);
 
     { Font.Color := clRed; }
-    TextOut(arect.Left + 3, arect.top + 3, ResultGrid.Cells[acol, arow]);
+    TextOut(bounds.Left + 3, bounds.top + 3, ResultGrid.Cells[col, row]);
 
     { Draw a star }
     if favourite then
-      TextOut(aRect.Right - 10, arect.Top, '*');
+      TextOut(bounds.Right - 10, bounds.Top, '*');
   end;
 end;
 
