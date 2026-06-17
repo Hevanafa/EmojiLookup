@@ -82,6 +82,8 @@ type
     { in seconds, assigned in LoadEmojis }
     loadingTime: double;
 
+    lastSearchTerm: string;
+
     emojiList: TEmojiList;
     favouriteList: TFavouriteList;
 
@@ -206,13 +208,18 @@ end;
 
 procedure TForm1.SearchEditChange(Sender: TObject);
 var
+  localSearchTerm: string;
   emoji: temoji;
   col, row: word;
   startTick, endTick: TDateTime;
 begin
   if emojiList = nil then exit;
+  if GetSearchTerm = lastSearchTerm then exit;
 
-  if GetSearchTerm = '' then begin
+  lastSearchTerm := GetSearchTerm;
+  localSearchTerm := GetSearchTerm;
+
+  if localSearchTerm = '' then begin
     ResultGrid.clear;
     DescriptionMemo.text := format(
       'Loaded %d emojis' + LineEnding + 'Enter a few words to search', [
@@ -227,7 +234,7 @@ begin
   lastEmojiSearchResult.clear;
 
   for emoji in emojiList do
-    if emoji.LowerCaseDescriptor.contains(GetSearchTerm) then
+    if emoji.LowerCaseDescriptor.contains(localSearchTerm) then
       lastEmojiSearchResult.Add(emoji);
 
   ResultGrid.clear;
@@ -469,6 +476,8 @@ begin
   SearchEdit.clear;
   DescriptionMemo.clear;
   ResultGrid.Clear;
+
+  lastSearchTerm := '';
 
   lastEmojiSearchResult := TEmojiList.Create(false);
   EmojiBufferEdit.clear;
