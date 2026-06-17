@@ -101,6 +101,7 @@ type
 
     const favouritesFile = 'favourites.txt';
 
+    procedure AppendToResult(const content: string);
     function GetSearchTerm: string;
     procedure LoadEmojis;
 
@@ -217,6 +218,30 @@ end;
 
 
 { TForm1 }
+procedure TForm1.AppendToResult(const content: string);
+var
+  row, col: smallint;
+  foundEmpty: boolean;
+begin
+  { TODO: Find an empty cell in ResultGrid }
+  foundEmpty := false;
+
+  for row:=0 to ResultGrid.RowCount - 1 do
+  for col:=0 to ResultGrid.ColCount - 1 do begin
+    if ResultGrid.Cells[col, row] = '' then begin
+      foundEmpty := true;
+      break
+    end;
+  end;
+
+  if not foundEmpty then begin
+    ResultGrid.RowCount := ResultGrid.RowCount + 1;
+    inc(row);
+    col := 0
+  end;
+
+  ResultGrid.cells[col, row] := content
+end;
 
 procedure TForm1.ShowAllEmojis;
 var
@@ -228,8 +253,8 @@ begin
   ResultGrid.Clear;
 
   ResultGrid.RowCount := ceil(emojiList.Count / ResultGrid.ColCount);
-  row := 0;  col := 0;
 
+  row := 0;  col := 0;
   for e in emojiList do begin
     ResultGrid.Cells[col, row] := e.Emoji;
 
