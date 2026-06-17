@@ -266,33 +266,19 @@ end;
 
 procedure TForm1.ShowAllEmojis;
 var
-  e: TEmoji;
-  row, col: word;
+  emoji: TEmoji;
 begin
   if emojiList = nil then exit;
 
   ClearGrid;
 
-  DescriptionMemo.Text := format('colcount: %d', [ResultGrid.ColCount]);
-  Invalidate;
+  for emoji in emojiList do
+    AppendToResult(emoji.emoji);
 
-  ResultGrid.RowCount := ceil(emojiList.Count / ResultGrid.ColCount);
-
-  row := 0;  col := 0;
-  for e in emojiList do begin
-    ResultGrid.Cells[col, row] := e.Emoji;
-
-    inc(col);
-    if col >= ResultGrid.ColCount then begin
-      inc(row);
-      col := 0;
-    end;
-  end;
-
-  DescriptionMemo.text := format(
+  { DescriptionMemo.text := format(
     'Loaded %d emojis' + LineEnding + 'Enter a few words to search', [
       emojiList.count
-    ]);
+    ]); }
 end;
 
 procedure TForm1.ShowFavouritedEmojis;
@@ -300,8 +286,6 @@ var
   favitem: TFavourite;
 begin
   ClearGrid;
-
-  { ResultGrid.RowCount := ceil(favouriteList.Count / ResultGrid.ColCount); }
 
   for favitem in favouriteList do
     AppendToResult(FindByCodepoints(favitem.Codepoints).Emoji);
@@ -582,7 +566,7 @@ begin
   lastEmojiSearchResult := TEmojiList.Create(false);
   EmojiBufferEdit.clear;
 
-  DescriptionMemo.text := format('colcount: %d', [ResultGrid.ColCount]);
+  { DescriptionMemo.text := format('colcount: %d', [ResultGrid.ColCount]); }
 
   ShowAllEmojis
 end;
@@ -691,14 +675,6 @@ var
   idx: word;
   favitem: TFavourite;
 begin
-  {
-  cell := ResultGrid.Cells[acol, arow];
-
-  for favitem in favouriteList do
-    if favitem.emoji.emoji = cell then
-      ResultGrid.canvas.Brush.Color := clMoneyGreen;
-  }
-
   idx := arow * ResultGrid.ColCount + acol;
 
   if (idx < lastEmojiSearchResult.Count)
