@@ -247,17 +247,20 @@ end;
 procedure TForm1.AppendToResult(const content: string);
 var
   row, col: smallint;
-  foundEmpty: boolean;
 begin
-  foundEmpty := false;
+  if ResultGrid.RowCount = 0 then begin
+    ResultGrid.RowCount := 1;
+    col := 0
+  end;
 
   col := FindEmptyLastCell;
-  if col < 0 then
+
+  if col < 0 then begin
+    ResultGrid.RowCount := ResultGrid.RowCount + 1;
     col := 0;
+  end;
 
-  row := ResultGrid.RowCount;
-  ResultGrid.RowCount := ResultGrid.RowCount + 1;
-
+  row := ResultGrid.RowCount - 1;
   ResultGrid.cells[col, row] := content
 end;
 
@@ -307,8 +310,7 @@ end;
 procedure TForm1.SearchEditChange(Sender: TObject);
 var
   localSearchTerm: string;
-  emoji: temoji;
-  col, row: word;
+  emoji: TEmoji;
   startTick, endTick: TDateTime;
 begin
   if emojiList = nil then exit;
@@ -331,19 +333,9 @@ begin
       lastEmojiSearchResult.Add(emoji);
 
   ClearGrid;
-  ResultGrid.RowCount := ceil(lastEmojiSearchResult.Count / 8);
 
-  col := 0;  row := 0;
-
-  for emoji in lastEmojiSearchResult do begin
-    ResultGrid.Cells[col, row] := emoji.emoji;
-
-    inc(col);
-    if col >= ResultGrid.ColCount then begin
-      inc(row);
-      col := 0;
-    end;
-  end;
+  for emoji in lastEmojiSearchResult do
+    AppendToResult(emoji.emoji);
 
   endTick := now;
 
@@ -637,6 +629,8 @@ begin
 
   if lastViewMode <> fActualViewMode then begin
     lastViewMode := fActualViewMode;
+
+    lastEmojiSearchResult.clear;
 
     lastSearchTerm := '';
     SearchEdit.Clear;
