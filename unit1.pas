@@ -57,7 +57,7 @@ type
   TEmojiList = specialize TFPGObjectList<TEmoji>;
   TFavouriteList = specialize TFPGObjectList<TFavourite>;
 
-  TEmojiViewModes = (ViewModeAll, ViewModeFavourites);
+  TEmojiViewModes = (ViewModeAll, ViewModeFavourites, ViewModeRecents);
 
   { TForm1 }
 
@@ -67,6 +67,7 @@ type
     Label1: TLabel;
     AllRadio: TRadioButton;
     FavouritesRadio: TRadioButton;
+    RecentsRadio: TRadioButton;
     SearchEdit: TEdit;
     DescriptionMemo: TMemo;
     ResultGrid: TStringGrid;
